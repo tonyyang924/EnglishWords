@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">英文單字即時通</string>
+    <string name="action_settings">設定</string>
+    <string name="common_ok">確定</string>
+    <string name="loading_message">讀取中…</string>
+    <string name="loading_and_import">"讀取檔案並匯入資料庫中…"</string>
+    <string name="loading_complete">處理完成</string>
+    <string name="dialog_action_ok">確定</string>
+    <string name="dialog_action_cancel">取消</string>
+    <string name="dialog_error_title">抱歉</string>
+    <string name="chooser_title">讀取/更新</string>
+    <string name="chooser_choose_btn">選擇檔案</string>
+    <string name="chooser_filename">檔案名稱：</string>
+    <string name="chooser_filesize">檔案大小：</string>
+    <string name="exam_status">資料庫內沒有資料，無法進行自我考試。</string>
+    <string name="random">隨機出題</string>
+    <string name="menu_drawer">抽屜</string>
+    <string name="menu_search">搜尋</string>
+    <string name="menu_notifications">通知</string>
+</resources>
