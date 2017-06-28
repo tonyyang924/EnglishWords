@@ -31,7 +31,9 @@ public class LoadTask extends EggTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        if (tool.getFileUrl() != null && tool.getFileUrl().contains("content://")) {
+        if (tool.getFileUrl() != null
+                && (tool.getFileUrl().contains("content://")
+                || tool.getFileUrl().contains("file:///"))) {
             //   content://xxx.xxx
             //   讀取手機內檔案
             try {
