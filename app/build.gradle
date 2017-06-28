@@ -39,15 +39,21 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
-            shrinkResources true
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        debug {
+            debuggable true
+            shrinkResources false
+            minifyEnabled false
+            signingConfig signingConfigs.config
             buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
             manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
                                     FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
         }
-        debug {
+        release {
+            debuggable false
+            shrinkResources true
+            minifyEnabled true
+            signingConfig signingConfigs.config
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
             manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
                                     FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]

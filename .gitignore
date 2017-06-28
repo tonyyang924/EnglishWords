@@ -8,5 +8,5 @@
 *.apk #optional
 keystore.properties
 app/fabric.properties
-/secure
+app/englishwords.jks
 mysecret
