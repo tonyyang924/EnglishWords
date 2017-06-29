@@ -41,7 +41,6 @@ android {
     buildTypes {
         debug {
             debuggable true
-            shrinkResources false
             minifyEnabled false
             signingConfig signingConfigs.config
             buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
@@ -50,7 +49,6 @@ android {
         }
         release {
             debuggable false
-            shrinkResources true
             minifyEnabled false
             signingConfig signingConfigs.config
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
