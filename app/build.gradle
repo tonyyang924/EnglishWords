@@ -15,17 +15,23 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 def getMyApiKey(String property) {
     Properties properties = new Properties()
-    properties.load(new FileInputStream(rootProject.file("mysecret")))
+    properties.load(new FileInputStream(rootProject.file("apikey")))
     return "\"" + properties.getProperty(property) + "\""
 }
 
 android {
     signingConfigs {
-        config {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+        debug {
+            keyAlias keystoreProperties['debugKeyAlias']
+            keyPassword keystoreProperties['debugKeyPassword']
+            storeFile file(keystoreProperties['debugStoreFile'])
+            storePassword keystoreProperties['debugStorePassword']
+        }
+        release {
+            keyAlias keystoreProperties['releaseKeyAlias']
+            keyPassword keystoreProperties['releaseKeyPassword']
+            storeFile file(keystoreProperties['releaseStoreFile'])
+            storePassword keystoreProperties['releaseStorePassword']
         }
     }
     compileSdkVersion 25
@@ -42,7 +48,7 @@ android {
         debug {
             debuggable true
             minifyEnabled false
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
             buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
             manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
                                     FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
@@ -50,7 +56,7 @@ android {
         release {
             debuggable false
             minifyEnabled false
-            signingConfig signingConfigs.config
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
             manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
