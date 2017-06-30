@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by tonyyang on 2017/6/1.
  */
 
-@DatabaseTable(tableName = DatabaseHelper.TABLE_NAME, daoClass = WordsDaoImpl.class)
+@DatabaseTable(tableName = DatabaseHelper.TABLE_NAME)
 public class Words implements Serializable {
 
     public static final String ID = "_id";
