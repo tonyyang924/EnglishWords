@@ -3,6 +3,7 @@ package tw.tonyyang.englishwords;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 
 import org.androidannotations.annotations.EApplication;
 
@@ -25,5 +26,6 @@ public class App extends Application {
                     .build();
             Fabric.with(fabric);
         }
+        Stetho.initializeWithDefaults(this);
     }
 }
