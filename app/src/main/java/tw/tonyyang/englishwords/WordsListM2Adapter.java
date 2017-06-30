@@ -21,6 +21,7 @@ public class WordsListM2Adapter extends RecyclerView.Adapter<WordsListM2Adapter.
 
     interface OnRecyclerViewListener {
         void onItemClick(View v, int position);
+
         void onItemLongClick(View v, int position);
     }
 

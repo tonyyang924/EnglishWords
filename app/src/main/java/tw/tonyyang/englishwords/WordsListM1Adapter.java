@@ -20,6 +20,7 @@ public class WordsListM1Adapter extends RecyclerView.Adapter<WordsListM1Adapter.
 
     interface OnRecyclerViewListener {
         void onItemClick(View v, int position);
+
         void onItemLongClick(View v, int position);
     }
 

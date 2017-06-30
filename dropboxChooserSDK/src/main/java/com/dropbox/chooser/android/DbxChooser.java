@@ -22,7 +22,7 @@ import android.os.Parcelable;
 
 /**
  * DbxChooser is a utility class to launch Dropbox's Android Chooser.
- *
+ * <p>
  * Example use:
  * <p><blockquote><pre>
  *   new DbxChooser(APP_KEY)
@@ -30,11 +30,10 @@ import android.os.Parcelable;
  *       .limitToExtensions(".png", ".jpg", ".jpeg")
  *       .launch(this, CHOOSER_REQUEST_CODE);
  * </pre></blockquote></p>
- * 
+ * <p>
  * <p>
  * The result will be received in the onActivityResult callback of the Activity or Fragment supplied to {@link DbxChooser#launch}.
  * </p>
- * 
  */
 public class DbxChooser {
 
@@ -51,9 +50,9 @@ public class DbxChooser {
     }
 
     private static final String[] intentResultExtras = {
-        "EXTRA_CHOOSER_RESULTS", // new unified result
-        "EXTRA_PREVIEW_RESULTS", // these others for backwards compatibility
-        "EXTRA_CONTENT_RESULTS",
+            "EXTRA_CHOOSER_RESULTS", // new unified result
+            "EXTRA_PREVIEW_RESULTS", // these others for backwards compatibility
+            "EXTRA_CONTENT_RESULTS",
     };
 
     /**
@@ -76,10 +75,10 @@ public class DbxChooser {
         }
         mAppKey = appKey;
     }
-    
+
 
     private static boolean isChooserAvailable(PackageManager pm) {
-        ResultType[] resultTypes = { ResultType.FILE_CONTENT, ResultType.PREVIEW_LINK, ResultType.DIRECT_LINK };
+        ResultType[] resultTypes = {ResultType.FILE_CONTENT, ResultType.PREVIEW_LINK, ResultType.DIRECT_LINK};
         for (ResultType resultType : resultTypes) {
             ResolveInfo ri = pm.resolveActivity(new Intent(resultType.action), PackageManager.MATCH_DEFAULT_ONLY);
             if (ri == null) {
@@ -183,7 +182,7 @@ public class DbxChooser {
      * The result will be received in the onActivityResult callback of the
      * supplied Fragment. If the supplied Fragment is not attached to an Activity,
      * this will throw an IllegalStateException.
-     * 
+     * <p>
      * NOTE: this method requires Android API at least version 11.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -337,7 +336,7 @@ public class DbxChooser {
 
     /**
      * Helper class to access the result of a successful invocation of the Dropbox Chooser.
-     *
+     * <p>
      * Example use:
      * <p><blockquote><pre>
      * protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -353,8 +352,8 @@ public class DbxChooser {
 
         /**
          * @param intent The Intent passed to onActivityResult as a result of the Dropbox Chooser.
-         * If the request code doesn't match the one provided to {@link DbxChooser#launch(Activity, int)} or if the result code
-         * was anything but {@link Activity#RESULT_OK}, this class will be unable to extract useful values.
+         *               If the request code doesn't match the one provided to {@link DbxChooser#launch(Activity, int)} or if the result code
+         *               was anything but {@link Activity#RESULT_OK}, this class will be unable to extract useful values.
          */
         public Result(Intent intent) {
             mIntent = intent;
@@ -363,10 +362,10 @@ public class DbxChooser {
         /**
          * @return A Uri referring to the file selected by the user.
          * <ul>
-         *  <li>If the chooser was for the ResultType PREVIEW_LINK or DIRECT_LINK, the
-         *      Uri is a web link to a preview page for the file or the file itself.</li>
-         *  <li>If the chooser was for the ResultType FILE_CONTENT, the Uri can be opened
-         *      via a ContentResolver to provide the contents of the file, already downloaded.</li>
+         * <li>If the chooser was for the ResultType PREVIEW_LINK or DIRECT_LINK, the
+         * Uri is a web link to a preview page for the file or the file itself.</li>
+         * <li>If the chooser was for the ResultType FILE_CONTENT, the Uri can be opened
+         * via a ContentResolver to provide the contents of the file, already downloaded.</li>
          * </ul>
          * If the provided Intent wasn't from a Chooser or a file wasn't chosen, this returns null.
          */
@@ -395,14 +394,14 @@ public class DbxChooser {
          * @return A Map where the keys are thumbnail sizes and the values are
          * Uris that, when opened via a ContentResolver, provide thumbnails of
          * the file selected by the user.
-         *
+         * <p>
          * The map may be empty--this indicates no thumbnails could be
          * generated for the file. If the map is not empty, it will contain at
          * least the keys:
          * <ul>
-         *    <li><pre>"64x64"</pre></li>
-         *    <li><pre>"200x200"</pre></li>
-         *    <li><pre>"640x480"</pre></li>
+         * <li><pre>"64x64"</pre></li>
+         * <li><pre>"200x200"</pre></li>
+         * <li><pre>"640x480"</pre></li>
          * </ul>
          * If the provided Intent wasn't from a ResultType *_LINK Chooser, a file wasn't
          * chosen, or the file was chosen from an old version of the Dropbox app, this returns null.
@@ -455,7 +454,7 @@ public class DbxChooser {
          */
         private Bundle[] getResults() {
             if (mIntent == null) {
-                return new Bundle[] {};
+                return new Bundle[]{};
             }
             for (String resultExtra : intentResultExtras) {
                 Parcelable[] results = mIntent.getParcelableArrayExtra(resultExtra);
@@ -467,7 +466,7 @@ public class DbxChooser {
                     return resultBundles;
                 }
             }
-            return new Bundle[] {};
+            return new Bundle[]{};
         }
     }
 }

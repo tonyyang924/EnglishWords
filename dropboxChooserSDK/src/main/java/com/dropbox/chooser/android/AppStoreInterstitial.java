@@ -131,10 +131,10 @@ class AppStoreInterstitial {
         Display display = w.getWindowManager().getDefaultDisplay();
         display.getMetrics(metrics);
 
-        int width = Math.min(metrics.widthPixels - (int)(2 * DLG_PADDING_DP * metrics.density),
-                             (int)(MAX_DIALOG_WIDTH_DP * metrics.density));
-        int height = Math.min(metrics.heightPixels - (int)((2 * DLG_PADDING_DP + APPROX_STATUSBAR_HEIGHT_DP) * metrics.density),
-                              (int)(MAX_DIALOG_HEIGHT_DP * metrics.density));
+        int width = Math.min(metrics.widthPixels - (int) (2 * DLG_PADDING_DP * metrics.density),
+                (int) (MAX_DIALOG_WIDTH_DP * metrics.density));
+        int height = Math.min(metrics.heightPixels - (int) ((2 * DLG_PADDING_DP + APPROX_STATUSBAR_HEIGHT_DP) * metrics.density),
+                (int) (MAX_DIALOG_HEIGHT_DP * metrics.density));
 
         int x = (metrics.widthPixels - width) / 2;
         int y = (metrics.heightPixels - height - ((int) (APPROX_STATUSBAR_HEIGHT_DP * metrics.density))) / 2;
@@ -145,7 +145,7 @@ class AppStoreInterstitial {
         params.width = width;
         params.height = height;
         w.setAttributes(params);
-        w.setGravity(Gravity.LEFT|Gravity.TOP);
+        w.setGravity(Gravity.LEFT | Gravity.TOP);
     }
 
     private static void setStrings(View v, boolean needUpdate) {
