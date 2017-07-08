@@ -5,12 +5,15 @@ import android.content.Context;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EBean;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import jxl.Sheet;
 import jxl.Workbook;
 import tw.tonyyang.englishwords.db.Words;
 import tw.tonyyang.englishwords.db.WordsDao;
+
+import static tw.tonyyang.englishwords.util.LoadTask.TMP_FILE_NAME;
 
 @EBean(scope = EBean.Scope.Singleton)
 public class Tool {
@@ -35,9 +38,19 @@ public class Tool {
     }
 
     public void readExcel() {
+        FileInputStream fileInputStream = null;
         try {
-            File internetFile = new File("/data/data/tw.tonyyang.englishwords/files/internet_file.xls");
-            Workbook book = Workbook.getWorkbook(internetFile);
+            fileInputStream = context.openFileInput(TMP_FILE_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (fileInputStream == null) {
+            return;
+        }
+
+        try {
+            Workbook book = Workbook.getWorkbook(fileInputStream);
             book.getNumberOfSheets();
             //獲得工作表對象
             Sheet sheet = book.getSheet(0);
@@ -62,6 +75,12 @@ public class Tool {
             }
             book.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            fileInputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

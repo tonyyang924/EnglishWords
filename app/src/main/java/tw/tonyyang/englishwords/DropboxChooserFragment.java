@@ -6,9 +6,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dropbox.chooser.android.DbxChooser;
 
@@ -22,9 +26,10 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 
-import tw.tonyyang.englishwords.util.Tool;
 import tw.tonyyang.englishwords.db.WordsDao;
 import tw.tonyyang.englishwords.util.LoadTask;
+import tw.tonyyang.englishwords.util.PermissionManager;
+import tw.tonyyang.englishwords.util.Tool;
 
 @EFragment(R.layout.fragment_dropboxchooser)
 public class DropboxChooserFragment extends Fragment {
@@ -35,6 +40,9 @@ public class DropboxChooserFragment extends Fragment {
 
     @Bean
     WordsDao wordsDao;
+
+    @Bean
+    PermissionManager permissionManager;
 
     /*
      * This is for you
@@ -70,33 +78,43 @@ public class DropboxChooserFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog,
                                         int which) {
-                        // Toast.makeText(cxt, "你選擇的是:" + items[which],
-                        // 3000).show();
                         if (items[which].equals("從檔案目錄")) {
-                            // 建立"選擇檔案"的ACTION
-                            Intent intent = new Intent(
-                                    Intent.ACTION_GET_CONTENT);
-                            // 設定檔案類型
-                            intent.setType("text/*");
-                            // 建立 "檔案選擇器" 的 Intent (第二個參數: 選擇器的標題)
-                            Intent destIntent = Intent.createChooser(
-                                    intent, "檔案目錄選擇");
-                            // 切換到檔案選擇器 (它的處理結果, 會觸發 onActivityResult
-                            // 事件)
-                            startActivityForResult(destIntent,
-                                    FILE_CHOOSER_REQUEST);
+                            if (Build.VERSION.SDK_INT >= 23) {
+                                permissionManager.verifyStoragePermissions(getActivity(), new PermissionManager.PermissionCallback() {
+                                    @Override
+                                    public void onPermissionGranted() {
+                                        chooseFileFromLocal();
+                                    }
+
+                                    @Override
+                                    public void onShowGuide() {
+                                        Toast.makeText(getActivity(), "需要取得您的讀寫權限才能正常存取手機檔案，請至\"設定\"開啟讀寫權限。", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                        Uri uri = Uri.fromParts("package", getActivity().getPackageName(), null);
+                                        intent.setData(uri);
+                                        getActivity().startActivityForResult(intent, PermissionManager.REQUEST_EXTERNAL_STORAGE);
+                                    }
+                                });
+                            } else {
+                                chooseFileFromLocal();
+                            }
                         } else if (items[which].equals("從Dropbox")) {
-                            if (isInstalled("com.dropbox.android")) { //如果有安裝dropbox
+                            //如果有安裝DropBox
+                            if (isInstalled("com.dropbox.android")) {
+                                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) {
+                                    return;
+                                }
                                 try {
                                     DbxChooser.ResultType resultType;
                                     resultType = DbxChooser.ResultType.DIRECT_LINK;
-                                    mChooser.forResultType(resultType).launch(
-                                            DropboxChooserFragment.this,
-                                            DBX_CHOOSER_REQUEST);
+                                    mChooser.forResultType(resultType).launch(DropboxChooserFragment.this, DBX_CHOOSER_REQUEST);
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            } else { //如果沒安裝dropbox
+                            } else { //如果沒安裝DropBox
+                                if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) {
+                                    return;
+                                }
                                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.dropbox.android"));
                                 startActivity(intent);
                             }
@@ -105,6 +123,17 @@ public class DropboxChooserFragment extends Fragment {
 
                 }).create();
         alertdialog.show();
+    }
+
+    private void chooseFileFromLocal() {
+        Intent intent = new Intent(
+                Intent.ACTION_GET_CONTENT);
+        intent.setType("text/*");
+        Intent destIntent = Intent.createChooser(intent, "檔案目錄選擇");
+        if (getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) {
+            return;
+        }
+        startActivityForResult(destIntent, FILE_CHOOSER_REQUEST);
     }
 
     @Click(R.id.submitBtn)
@@ -135,7 +164,6 @@ public class DropboxChooserFragment extends Fragment {
         } else if (requestCode == FILE_CHOOSER_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 logger.debug("file chooser");
-                // 取得檔案的 Uri
                 Uri uri = data.getData();
                 if (uri != null) {
                     tool.setFileUrl(uri.toString());
@@ -144,6 +172,20 @@ public class DropboxChooserFragment extends Fragment {
                     submitBtn.setEnabled(true);
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PermissionManager.REQUEST_EXTERNAL_STORAGE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    chooseFileFromLocal();
+                } else {
+                    Toast.makeText(getActivity(), "請取得內部檔案讀取權限，否則無法讀取本地端檔案。", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

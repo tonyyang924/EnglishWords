@@ -2,10 +2,12 @@ package tw.tonyyang.englishwords.util;
 
 import android.content.Context;
 import android.net.Uri;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +18,8 @@ import tw.tonyyang.englishwords.R;
 import tw.tonyyang.englishwords.RealTimeUpdateEvent;
 
 public class LoadTask extends EggTask<Void, Void, Void> {
+
+    public static final String TMP_FILE_NAME = "vocabulary.xls";
 
     private Tool tool;
 
@@ -31,46 +35,20 @@ public class LoadTask extends EggTask<Void, Void, Void> {
 
     @Override
     protected Void doInBackground(Void... params) {
-        if (tool.getFileUrl() != null
-                && (tool.getFileUrl().contains("content://")
-                || tool.getFileUrl().contains("file:///"))) {
-            //   content://xxx.xxx
-            //   讀取手機內檔案
-            try {
-                Uri uri = Uri.parse(tool.getFileUrl());
-                InputStream inputStream = context.getContentResolver().openInputStream(uri);
-                ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
-                byte[] buffer = new byte[10 * 1024];
-                while (true) {
-                    int len = inputStream.read(buffer);
-                    //publishProgress(len);
-                    if (len == -1) {
-                        break;
-                    }
-                    arrayOutputStream.write(buffer, 0, len);
-                }
-                arrayOutputStream.close();
-                inputStream.close();
-
-                byte[] data = arrayOutputStream.toByteArray();
-                FileOutputStream fileOutputStream = context.openFileOutput("toeic.xls", Context.MODE_PRIVATE);
-                fileOutputStream.write(data);
-                fileOutputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        byte[] data = new byte[0];
+        String fileUrl = tool.getFileUrl();
+        if (fileUrl != null && (fileUrl.contains("content://") || fileUrl.contains("file:///"))) {
+            data = readFile(fileUrl);
         } else {
-            //   https://xxx.xxx
-            //   讀取網路上檔案
             try {
                 URL url = new URL(tool.getFileUrl());
+                ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
                 HttpURLConnection connection = (HttpURLConnection) url
                         .openConnection();
                 connection.setConnectTimeout(10 * 1000);
                 connection.connect();
                 if (connection.getResponseCode() == 200) {
                     InputStream inputStream = connection.getInputStream();
-                    ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
                     byte[] buffer = new byte[10 * 1024];
                     while (true) {
                         int len = inputStream.read(buffer);
@@ -81,12 +59,22 @@ public class LoadTask extends EggTask<Void, Void, Void> {
                     }
                     arrayOutputStream.close();
                     inputStream.close();
-
-                    byte[] data = arrayOutputStream.toByteArray();
-                    FileOutputStream fileOutputStream = context.openFileOutput("internet_file.xls", Context.MODE_PRIVATE);
-                    fileOutputStream.write(data);
-                    fileOutputStream.close();
+                    data = arrayOutputStream.toByteArray();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = context.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (fileOutputStream != null) {
+            try {
+                fileOutputStream.write(data);
+                fileOutputStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -95,11 +83,25 @@ public class LoadTask extends EggTask<Void, Void, Void> {
         return null;
     }
 
+    private byte[] readFile(String fileName) {
+        byte[] data = new byte[4 * 1024];
+        try {
+            InputStream inputstream = context.getContentResolver().openInputStream(Uri.parse(fileName));
+            int bytesRead = inputstream.read(data);
+            while (bytesRead != -1) {
+                bytesRead = inputstream.read(data);
+            }
+            inputstream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     @Override
     protected void onPostExecute(Void result) {
         super.onPostExecute(result);
-        DialogFactory.createSimpleOkErrorDialog(
-                context, null, context.getString(R.string.loading_complete)).show();
+        Toast.makeText(context, context.getString(R.string.loading_complete), Toast.LENGTH_LONG).show();
 
         RealTimeUpdateEvent realTimeUpdateEvent = new RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST);
         realTimeUpdateEvent.setMessage("更新列表資料");
