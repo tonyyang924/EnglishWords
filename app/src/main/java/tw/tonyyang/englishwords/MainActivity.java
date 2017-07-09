@@ -1,9 +1,9 @@
 package tw.tonyyang.englishwords;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 
@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity {
         mTabs.addTab(mTabs.newTab());
         mTabs.addTab(mTabs.newTab());
         mTabs.addTab(mTabs.newTab());
-        mViewPager.setAdapter(new SamplePagerAdapter(getSupportFragmentManager(), mTabs.getTabCount()));
+        mViewPager.setAdapter(new SamplePagerAdapter(getFragmentManager(), mTabs.getTabCount()));
         mTabs.setupWithViewPager(mViewPager);
     }
 

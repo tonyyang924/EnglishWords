@@ -83,19 +83,35 @@ public class LoadTask extends EggTask<Void, Void, Void> {
         return null;
     }
 
-    private byte[] readFile(String fileName) {
-        byte[] data = new byte[4 * 1024];
+    private byte[] readFile(String filePath) {
+        ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+        Uri uri = Uri.parse(filePath);
+        InputStream inputStream = null;
         try {
-            InputStream inputstream = context.getContentResolver().openInputStream(Uri.parse(fileName));
-            int bytesRead = inputstream.read(data);
-            while (bytesRead != -1) {
-                bytesRead = inputstream.read(data);
-            }
-            inputstream.close();
-        } catch (IOException e) {
+            inputStream = context.getContentResolver().openInputStream(uri);
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return data;
+        if (inputStream != null) {
+
+            byte[] buffer = new byte[10 * 1024];
+            try {
+                while (true) {
+                    int len = inputStream.read(buffer);
+                    //publishProgress(len);
+                    if (len == -1) {
+                        break;
+                    }
+                    arrayOutputStream.write(buffer, 0, len);
+                }
+                arrayOutputStream.close();
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return arrayOutputStream.toByteArray();
     }
 
     @Override

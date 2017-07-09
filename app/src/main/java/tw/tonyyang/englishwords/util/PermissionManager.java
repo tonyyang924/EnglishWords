@@ -1,9 +1,12 @@
 package tw.tonyyang.englishwords.util;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 
 import org.androidannotations.annotations.EBean;
@@ -34,7 +37,8 @@ public class PermissionManager {
         this.context = context;
     }
 
-    public void verifyStoragePermissions(Activity activity, PermissionCallback permissionCallback) {
+    @TargetApi(Build.VERSION_CODES.M)
+    public void verifyStoragePermissions(Activity activity, Fragment fragment, PermissionCallback permissionCallback) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (permission != PackageManager.PERMISSION_GRANTED) {
             if (needShowGuide(activity)) {
@@ -43,7 +47,7 @@ public class PermissionManager {
             }
 
             setFlag(activity);
-            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
+            fragment.requestPermissions(PERMISSIONS_STORAGE, REQUEST_EXTERNAL_STORAGE);
         } else {
             permissionCallback.onPermissionGranted();
         }
@@ -53,11 +57,13 @@ public class PermissionManager {
         return GlobalPreference.getPreference(context).getBoolean(GlobalPreference.FLAG_PERMISSIONS_STORAGE);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private void setFlag(Activity activity) {
         boolean flag = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
         GlobalPreference.getPreference(context).put(GlobalPreference.FLAG_PERMISSIONS_STORAGE, flag);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private boolean needShowGuide(Activity activity) {
         return getFlag() && !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }

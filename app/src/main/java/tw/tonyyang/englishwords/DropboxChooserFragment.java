@@ -1,7 +1,9 @@
 package tw.tonyyang.englishwords;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,12 +61,15 @@ public class DropboxChooserFragment extends Fragment {
     @ViewById(R.id.submitBtn)
     Button submitBtn;
 
+    private Fragment fragment;
+
     private DbxChooser mChooser;
 
     private String[] items = {"從檔案目錄", "從Dropbox"};
 
     @AfterViews
     protected void initViews() {
+        fragment = DropboxChooserFragment.this;
         mChooser = new DbxChooser(APIContract.DROPBOX_API_KEY);
         submitBtn.setEnabled(false);
     }
@@ -80,7 +84,7 @@ public class DropboxChooserFragment extends Fragment {
                                         int which) {
                         if (items[which].equals("從檔案目錄")) {
                             if (Build.VERSION.SDK_INT >= 23) {
-                                permissionManager.verifyStoragePermissions(getActivity(), new PermissionManager.PermissionCallback() {
+                                permissionManager.verifyStoragePermissions(getActivity(), fragment, new PermissionManager.PermissionCallback() {
                                     @Override
                                     public void onPermissionGranted() {
                                         chooseFileFromLocal();
@@ -136,6 +140,7 @@ public class DropboxChooserFragment extends Fragment {
         startActivityForResult(destIntent, FILE_CHOOSER_REQUEST);
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Click(R.id.submitBtn)
     public void submit() {
         try {
@@ -189,6 +194,7 @@ public class DropboxChooserFragment extends Fragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     private boolean isInstalled(String pack) {
         PackageManager pm = getContext().getPackageManager();
         boolean appInstalled;
