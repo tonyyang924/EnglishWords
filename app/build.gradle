@@ -1,18 +1,30 @@
+import com.android.ide.common.signing.KeytoolException
+
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
 def AAVersion = '4.3.0'
 
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
 // Create a variable called keystorePropertiesFile, and initialize it to your
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
-// Initialize a new Properties() object called keystoreProperties.
-def keystoreProperties = new Properties()
+def File debugKeyStoreFile, releaseKeyStoreFile;
 
-// Load your keystore.properties file into the keystoreProperties object.
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.canRead()) {
+    // Load your keystore.properties file into the keystoreProperties object.
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    if (keystoreProperties != null) {
+        debugKeyStoreFile = file(keystoreProperties['debugStoreFile'])
+        releaseKeyStoreFile = file(keystoreProperties['releaseStoreFile'])
+    }
+} else {
+    println '\'keystore.properties\' not found!'
+}
 
 def getMyApiKey(String property) {
     Properties properties = new Properties()
@@ -23,16 +35,32 @@ def getMyApiKey(String property) {
 android {
     signingConfigs {
         debug {
-            keyAlias keystoreProperties['debugKeyAlias']
-            keyPassword keystoreProperties['debugKeyPassword']
-            storeFile file(keystoreProperties['debugStoreFile'])
-            storePassword keystoreProperties['debugStorePassword']
+            if (keystoreProperties != null) {
+                try {
+                    if (debugKeyStoreFile.canRead()) {
+                        keyAlias keystoreProperties['debugKeyAlias']
+                        keyPassword keystoreProperties['debugKeyPassword']
+                        storeFile file(keystoreProperties['debugStoreFile'])
+                        storePassword keystoreProperties['debugStorePassword']
+                    }
+                } catch (KeytoolException e) {
+                    println '\'debug keystore\' not found! ' + e
+                }
+            }
         }
         release {
-            keyAlias keystoreProperties['releaseKeyAlias']
-            keyPassword keystoreProperties['releaseKeyPassword']
-            storeFile file(keystoreProperties['releaseStoreFile'])
-            storePassword keystoreProperties['releaseStorePassword']
+            if (keystoreProperties != null) {
+                try {
+                    if (releaseKeyStoreFile.canRead()) {
+                        keyAlias keystoreProperties['releaseKeyAlias']
+                        keyPassword keystoreProperties['releaseKeyPassword']
+                        storeFile file(keystoreProperties['releaseStoreFile'])
+                        storePassword keystoreProperties['releaseStorePassword']
+                    }
+                } catch (KeytoolException e) {
+                    println '\'release keystore\' not found! ' + e
+                }
+            }
         }
     }
     compileSdkVersion 25
