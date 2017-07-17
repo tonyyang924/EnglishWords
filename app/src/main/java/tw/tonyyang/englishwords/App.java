@@ -19,13 +19,11 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!BuildConfig.DEBUG) {
-            final Fabric fabric = new Fabric.Builder(this)
-                    .kits(new Crashlytics())
-                    .debuggable(true)
-                    .build();
-            Fabric.with(fabric);
-        }
+        final Fabric fabric = new Fabric.Builder(this)
+                .kits(new Crashlytics())
+                .debuggable(true)
+                .build();
+        Fabric.with(fabric);
         Stetho.initializeWithDefaults(this);
     }
 }
