@@ -27,8 +27,19 @@ if (keystorePropertiesFile.canRead()) {
 
 def getMyApiKey(String property) {
     Properties properties = new Properties()
-    properties.load(new FileInputStream(rootProject.file("apikey")))
-    return "\"" + properties.getProperty(property) + "\""
+    def apikeyFile = rootProject.file("apikey")
+    if (apikeyFile.exists()) {
+        properties.load(new FileInputStream(apikeyFile))
+    }
+    return properties.getProperty(property)
+}
+
+def isEmpty(String str) {
+    return str == null || str == ""
+}
+
+def isNonEmpty(String str) {
+    return !isEmpty(str)
 }
 
 def getJenkinsBuildNumber() {
@@ -86,24 +97,45 @@ android {
         }
     }
     buildTypes {
+        def dropBoxAPiKey = getMyApiKey("dropBoxApiKey")
+        def facebookAppId = getMyApiKey("facebookAppId")
+        def fbLoginProtocolScheme = getMyApiKey("fbLoginProtocolScheme")
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
-            manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
-                                    FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
+            if (isNonEmpty(dropBoxAPiKey)) {
+                buildConfigField("String", "DROPBOX_API_KEY", dropBoxAPiKey)
+            } else {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
+            }
+            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
+                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
+            } else {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
+                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
+            }
         }
         release {
             debuggable false
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
-            manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
-                                    FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
+            if (isNonEmpty(dropBoxAPiKey)) {
+                buildConfigField("String", "DROPBOX_API_KEY", dropBoxAPiKey)
+            } else {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
+            }
+            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
+                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
+            } else {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
+                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
+            }
         }
     }
     lintOptions {

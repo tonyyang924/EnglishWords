@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +71,11 @@ public class DropboxChooserFragment extends Fragment {
     @AfterViews
     protected void initViews() {
         fragment = DropboxChooserFragment.this;
-        mChooser = new DbxChooser(APIContract.DROPBOX_API_KEY);
+        try {
+            mChooser = new DbxChooser(APIContract.DROPBOX_API_KEY);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
         submitBtn.setEnabled(false);
     }
 
