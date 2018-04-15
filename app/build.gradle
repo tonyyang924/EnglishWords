@@ -31,6 +31,11 @@ def getMyApiKey(String property) {
     return "\"" + properties.getProperty(property) + "\""
 }
 
+def getJenkinsBuildNumber() {
+    def number = System.getenv("BUILD_NUMBER") as Integer ?: 0
+    return number
+}
+
 android {
     signingConfigs {
         debug {
@@ -71,6 +76,7 @@ android {
         versionCode 2
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.ext.set("archivesBaseName", "englishwords_ver_" + versionName + "-" + getJenkinsBuildNumber())
 
         javaCompileOptions {
             annotationProcessorOptions {
