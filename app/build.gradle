@@ -41,7 +41,7 @@ android {
         debug {
             if (keystoreProperties != null) {
                 try {
-                    if (debugKeyStoreFile.canRead()) {
+                    if (debugKeyStoreFile != null && debugKeyStoreFile.canRead()) {
                         keyAlias keystoreProperties['debugKeyAlias']
                         keyPassword keystoreProperties['debugKeyPassword']
                         storeFile file(keystoreProperties['debugStoreFile'])
@@ -55,7 +55,7 @@ android {
         release {
             if (keystoreProperties != null) {
                 try {
-                    if (releaseKeyStoreFile.canRead()) {
+                    if (releaseKeyStoreFile != null && releaseKeyStoreFile.canRead()) {
                         keyAlias keystoreProperties['releaseKeyAlias']
                         keyPassword keystoreProperties['releaseKeyPassword']
                         storeFile file(keystoreProperties['releaseStoreFile'])
