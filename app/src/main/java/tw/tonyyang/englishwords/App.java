@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.androidannotations.annotations.EApplication;
 
@@ -24,6 +25,7 @@ public class App extends Application {
                 .debuggable(true)
                 .build();
         Fabric.with(fabric);
+        FirebaseAnalytics.getInstance(this);
         Stetho.initializeWithDefaults(this);
     }
 }
