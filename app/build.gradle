@@ -162,7 +162,6 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation "com.j256.ormlite:ormlite-core:4.48"
     implementation "com.j256.ormlite:ormlite-android:4.48"
-    implementation project(':dropboxChooserSDK')
     implementation 'com.google.code.gson:gson:2.8.4'
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
