@@ -18,12 +18,12 @@ This project is built for english learner.
 
 implemented:
 
-* [x] import vocabulary from excel file
-* [x] examination
+* [v] import vocabulary from excel file
+* [v] examination
 
 TODO:
 
-* [ ] UI flow simplify
+* [x] UI flow simplify
 
 ## Contributing
 
