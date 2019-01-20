@@ -1,10 +1,9 @@
 import com.android.ide.common.signing.KeytoolException
 
 apply plugin: 'com.android.application'
-apply plugin: 'android-apt'
 apply plugin: 'io.fabric'
 
-def AAVersion = '4.3.0'
+def AAVersion = '4.5.2'
 
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
@@ -13,7 +12,7 @@ def keystoreProperties = new Properties()
 // keystore.properties file, in the rootProject folder.
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 
-def File debugKeyStoreFile, releaseKeyStoreFile;
+File debugKeyStoreFile, releaseKeyStoreFile
 
 if (keystorePropertiesFile.canRead()) {
     // Load your keystore.properties file into the keystoreProperties object.
@@ -28,8 +27,24 @@ if (keystorePropertiesFile.canRead()) {
 
 def getMyApiKey(String property) {
     Properties properties = new Properties()
-    properties.load(new FileInputStream(rootProject.file("apikey")))
-    return "\"" + properties.getProperty(property) + "\""
+    def apikeyFile = rootProject.file("apikey")
+    if (apikeyFile.exists()) {
+        properties.load(new FileInputStream(apikeyFile))
+    }
+    return properties.getProperty(property)
+}
+
+static def isEmpty(String str) {
+    return str == null || str == ""
+}
+
+static def isNonEmpty(String str) {
+    return !isEmpty(str)
+}
+
+static def getJenkinsBuildNumber() {
+    def number = System.getenv("BUILD_NUMBER") as Integer ?: 0
+    return number
 }
 
 android {
@@ -37,7 +52,7 @@ android {
         debug {
             if (keystoreProperties != null) {
                 try {
-                    if (debugKeyStoreFile.canRead()) {
+                    if (debugKeyStoreFile != null && debugKeyStoreFile.canRead()) {
                         keyAlias keystoreProperties['debugKeyAlias']
                         keyPassword keystoreProperties['debugKeyPassword']
                         storeFile file(keystoreProperties['debugStoreFile'])
@@ -51,7 +66,7 @@ android {
         release {
             if (keystoreProperties != null) {
                 try {
-                    if (releaseKeyStoreFile.canRead()) {
+                    if (releaseKeyStoreFile != null && releaseKeyStoreFile.canRead()) {
                         keyAlias keystoreProperties['releaseKeyAlias']
                         keyPassword keystoreProperties['releaseKeyPassword']
                         storeFile file(keystoreProperties['releaseStoreFile'])
@@ -63,35 +78,63 @@ android {
             }
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 28
     defaultConfig {
         applicationId "tw.tonyyang.englishwords"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 28
         versionCode 2
         versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        project.ext.set("archivesBaseName", "englishwords_ver_" + versionName + "-" + getJenkinsBuildNumber())
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+                arguments = ["resourcePackageName": android.defaultConfig.applicationId]
+            }
+        }
     }
     buildTypes {
+        def dropBoxAPiKey = getMyApiKey("dropBoxApiKey")
+        def facebookAppId = getMyApiKey("facebookAppId")
+        def fbLoginProtocolScheme = getMyApiKey("fbLoginProtocolScheme")
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
-            manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
-                                    FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
+            if (isNonEmpty(dropBoxAPiKey)) {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
+            } else {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
+            }
+            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
+                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
+            } else {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
+                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
+            }
         }
         release {
             debuggable false
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "DROPBOX_API_KEY", getMyApiKey("dropBoxApiKey")
-            manifestPlaceholders = [FACEBOOK_APP_ID         : getMyApiKey("facebookAppId"),
-                                    FB_LOGIN_PROTOCOL_SCHEME: getMyApiKey("fbLoginProtocolScheme")]
+            if (isNonEmpty(dropBoxAPiKey)) {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
+            } else {
+                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
+            }
+            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
+                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
+            } else {
+                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
+                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
+            }
         }
     }
     lintOptions {
@@ -100,41 +143,34 @@ android {
     }
 }
 
-apt {
-    arguments {
-        resourcePackageName android.defaultConfig.applicationId
-        androidManifestFile variant.outputs[0]?.processResources?.manifestFile
-    }
-}
-
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v13:25.3.1'
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:25.3.1'
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-    apt "org.androidannotations:ormlite:$AAVersion"
-    compile "org.androidannotations:ormlite-api:$AAVersion"
-    compile 'org.slf4j:slf4j-api:1.7.6'
-    compile "com.j256.ormlite:ormlite-core:4.48"
-    compile "com.j256.ormlite:ormlite-android:4.48"
-    compile project(':dropboxChooserSDK')
-    compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.hedgehog.ratingbar:app:1.1.2'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true
-    }
-    compile 'com.facebook.android:facebook-android-sdk:4.23.0'
-    compile 'org.greenrobot:eventbus:3.0.0'
-    compile 'com.facebook.stetho:stetho:1.5.0'
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:support-v13:28.0.0'
+    androidTestImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
+    implementation "org.androidannotations:androidannotations-api:$AAVersion"
+    annotationProcessor "org.androidannotations:ormlite:$AAVersion"
+    implementation "org.androidannotations:ormlite-api:$AAVersion"
+    implementation 'org.slf4j:slf4j-api:1.7.25'
+    implementation "com.j256.ormlite:ormlite-core:4.48"
+    implementation "com.j256.ormlite:ormlite-android:4.48"
+    implementation 'com.google.code.gson:gson:2.8.4'
+    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.hedgehog.ratingbar:app:1.1.2'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
+    implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.facebook.stetho:stetho:1.5.0'
 }
 
 repositories {
@@ -142,3 +178,5 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
+
+apply plugin: 'com.google.gms.google-services'

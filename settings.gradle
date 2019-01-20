@@ -1,1 +1,1 @@
-include ':app', ':dropboxChooserSDK'
+include ':app'

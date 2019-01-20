@@ -7,7 +7,6 @@
 .idea
 *.apk #optional
 keystore.properties
-app/fabric.properties
 app/englishwords.jks
 app/englishwords_debug.jks
 apikey

@@ -21,10 +21,10 @@ public class MainActivity extends BaseActivity {
     private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
 
     @ViewById(R.id.tabs)
-    TabLayout mTabs;
+    protected TabLayout mTabs;
 
     @ViewById(R.id.viewpager)
-    ViewPager mViewPager;
+    protected ViewPager mViewPager;
 
     @AfterViews
     protected void initViews() {
@@ -40,7 +40,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void initToolbar() {
         super.initToolbar();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
@@ -62,7 +62,7 @@ public class MainActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new DropboxChooserFragment_();
+                    return new FileChooserFragment_();
                 case 1:
                     return new WordsListM1Fragment_();
                 case 2:

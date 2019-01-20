@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import org.androidannotations.annotations.EBean;
 
 import static org.androidannotations.annotations.EBean.Scope.Singleton;
+import static tw.tonyyang.englishwords.RequestCodeStore.REQUEST_EXTERNAL_STORAGE;
 
 /**
  * Created by tonyyang on 2017/7/5.
@@ -28,7 +29,7 @@ public class PermissionManager {
     private Context context;
 
     // Storage Permissions
-    public static final int REQUEST_EXTERNAL_STORAGE = 1;
+
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
