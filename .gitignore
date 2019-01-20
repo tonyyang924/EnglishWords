@@ -10,3 +10,4 @@ keystore.properties
 app/englishwords.jks
 app/englishwords_debug.jks
 apikey
+app/release/
