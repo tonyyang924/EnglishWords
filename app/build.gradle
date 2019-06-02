@@ -96,7 +96,6 @@ android {
         }
     }
     buildTypes {
-        def dropBoxAPiKey = getMyApiKey("dropBoxApiKey")
         def facebookAppId = getMyApiKey("facebookAppId")
         def fbLoginProtocolScheme = getMyApiKey("fbLoginProtocolScheme")
         debug {
@@ -105,11 +104,6 @@ android {
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            if (isNonEmpty(dropBoxAPiKey)) {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
-            } else {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
-            }
             if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
                 manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
                                         FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
@@ -123,11 +117,6 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (isNonEmpty(dropBoxAPiKey)) {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
-            } else {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
-            }
             if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
                 manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
                                         FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
