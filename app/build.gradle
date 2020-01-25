@@ -25,23 +25,6 @@ if (keystorePropertiesFile.canRead()) {
     println '\'keystore.properties\' not found!'
 }
 
-def getMyApiKey(String property) {
-    Properties properties = new Properties()
-    def apikeyFile = rootProject.file("apikey")
-    if (apikeyFile.exists()) {
-        properties.load(new FileInputStream(apikeyFile))
-    }
-    return properties.getProperty(property)
-}
-
-static def isEmpty(String str) {
-    return str == null || str == ""
-}
-
-static def isNonEmpty(String str) {
-    return !isEmpty(str)
-}
-
 static def getJenkinsBuildNumber() {
     def number = System.getenv("BUILD_NUMBER") as Integer ?: 0
     return number
@@ -97,34 +80,18 @@ android {
         }
     }
     buildTypes {
-        def facebookAppId = getMyApiKey("facebookAppId")
-        def fbLoginProtocolScheme = getMyApiKey("fbLoginProtocolScheme")
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
-                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
-            } else {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
-                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
-            }
         }
         release {
             debuggable false
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
-                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
-            } else {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
-                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
-            }
         }
     }
     lintOptions {
@@ -158,7 +125,6 @@ dependencies {
     implementation 'com.hedgehog.ratingbar:app:1.1.2'
     implementation 'com.google.firebase:firebase-core:16.0.6'
     implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
-    implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.facebook.stetho:stetho:1.5.0'
 }
