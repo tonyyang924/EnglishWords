@@ -7,7 +7,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 import static tw.tonyyang.englishwords.RequestCodeStore.REQUEST_EXTERNAL_STORAGE;
 

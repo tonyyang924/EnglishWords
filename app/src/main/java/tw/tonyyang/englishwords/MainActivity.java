@@ -2,10 +2,10 @@ package tw.tonyyang.englishwords;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.legacy.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
