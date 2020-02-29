@@ -1,55 +1,53 @@
 package tw.tonyyang.englishwords;
 
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.hedgehog.ratingbar.RatingBar;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.ViewById;
-
 import tw.tonyyang.englishwords.database.Word;
 
 
-@EActivity(R.layout.activity_word_list_info)
 public class WordListDetailActivity extends BaseActivity {
 
-    @Extra
-    Word selectedWords;
+    public static final String EXTRA_SELECTED_WORDS = "extra_selected_words";
 
-    @ViewById(R.id.wordTV)
-    TextView wordTV;
+    private Word selectedWords;
 
-    @ViewById(R.id.wordmeanTV)
-    TextView wordMeanTV;
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_word_list_info;
+    }
 
-    @ViewById(R.id.wordsentenceTV)
-    TextView wordSentenceTV;
-
-    @ViewById(R.id.categoryTV)
-    TextView categoryTV;
-
-    @ViewById(R.id.ratingbar)
-    RatingBar ratingbar;
-
-    @AfterViews
-    protected void initViews() {
-        super.initViews();
+    @Override
+    protected void onViewCreated() {
         initActionBar();
+        initExtras();
         setViews();
     }
 
     private void initActionBar() {
-        ActionBar actionBar = getSupportActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
+    private void initExtras() {
+        final Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            selectedWords = (Word) bundle.getSerializable(EXTRA_SELECTED_WORDS);
+        }
+    }
+
     private void setViews() {
+        final TextView wordTV = findViewById(R.id.wordTV);
+        final TextView wordMeanTV = findViewById(R.id.wordmeanTV);
+        final TextView wordSentenceTV = findViewById(R.id.wordsentenceTV);
+        final TextView categoryTV = findViewById(R.id.categoryTV);
+        final RatingBar ratingbar = findViewById(R.id.ratingbar);
         if (selectedWords != null) {
             wordTV.setText(selectedWords.getWord().replace("*", ""));
             wordMeanTV.setText(selectedWords.getWordMean());

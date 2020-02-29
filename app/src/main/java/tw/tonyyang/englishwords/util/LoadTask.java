@@ -25,7 +25,7 @@ public class LoadTask extends EggTask<Void, Void, Void> {
 
     public LoadTask(Context context) {
         super(context);
-        tool = Tool_.getInstance_(context);
+        tool = Tool.getInstance();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class LoadTask extends EggTask<Void, Void, Void> {
                 e.printStackTrace();
             }
         }
-        tool.readExcel();
+        tool.readExcel(context);
         return null;
     }
 

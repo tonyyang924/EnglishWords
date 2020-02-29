@@ -9,17 +9,27 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 
-import org.androidannotations.annotations.EBean;
-
-import static org.androidannotations.annotations.EBean.Scope.Singleton;
 import static tw.tonyyang.englishwords.RequestCodeStore.REQUEST_EXTERNAL_STORAGE;
 
 /**
  * Created by tonyyang on 2017/7/5.
  */
 
-@EBean(scope = Singleton)
 public class PermissionManager {
+
+    private static PermissionManager instance = null;
+
+    public static synchronized PermissionManager getInstance() {
+        // double-check locking
+        if (instance == null) {
+            synchronized (PermissionManager.class) {
+                if (instance == null) {
+                    instance = new PermissionManager();
+                }
+            }
+        }
+        return instance;
+    }
 
     public interface PermissionCallback {
         void onPermissionGranted();
@@ -27,15 +37,9 @@ public class PermissionManager {
         void onShowGuide();
     }
 
-    private Context context;
-
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
-
-    PermissionManager(Context context) {
-        this.context = context;
-    }
 
     @TargetApi(Build.VERSION_CODES.M)
     public void verifyStoragePermissions(Activity activity, Fragment fragment, PermissionCallback permissionCallback) {
@@ -53,18 +57,18 @@ public class PermissionManager {
         }
     }
 
-    private boolean getFlag() {
+    private boolean getFlag(Context context) {
         return GlobalPreference.getPreference(context).getBoolean(GlobalPreference.FLAG_PERMISSIONS_STORAGE);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private void setFlag(Activity activity) {
         boolean flag = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        GlobalPreference.getPreference(context).put(GlobalPreference.FLAG_PERMISSIONS_STORAGE, flag);
+        GlobalPreference.getPreference(activity).put(GlobalPreference.FLAG_PERMISSIONS_STORAGE, flag);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private boolean needShowGuide(Activity activity) {
-        return getFlag() && !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        return getFlag(activity) && !ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
     }
 }

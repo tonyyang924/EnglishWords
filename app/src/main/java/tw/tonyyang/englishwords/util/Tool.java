@@ -2,7 +2,6 @@ package tw.tonyyang.englishwords.util;
 
 import android.content.Context;
 
-import org.androidannotations.annotations.EBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,23 +10,30 @@ import java.io.IOException;
 
 import jxl.Sheet;
 import jxl.Workbook;
-import tw.tonyyang.englishwords.App_;
+import tw.tonyyang.englishwords.App;
 import tw.tonyyang.englishwords.database.Word;
 
 import static tw.tonyyang.englishwords.util.LoadTask.TMP_FILE_NAME;
 
-@EBean(scope = EBean.Scope.Singleton)
 public class Tool {
 
     private static final Logger logger = LoggerFactory.getLogger(Tool.class);
 
-    private Context context;
+    private static Tool instance = null;
+
+    public static synchronized Tool getInstance() {
+        // double-check locking
+        if (instance == null) {
+            synchronized (Tool.class) {
+                if (instance == null) {
+                    instance = new Tool();
+                }
+            }
+        }
+        return instance;
+    }
 
     private String fileUrl;
-
-    Tool(Context context) {
-        this.context = context;
-    }
 
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
@@ -37,7 +43,7 @@ public class Tool {
         return fileUrl;
     }
 
-    void readExcel() {
+    void readExcel(Context context) {
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = context.openFileInput(TMP_FILE_NAME);
@@ -71,7 +77,7 @@ public class Tool {
                 word.setWordStar(sheet.getCell(3, i).getContents());
                 word.setWordSentence(sheet.getCell(4, i).getContents());
 
-                App_.getDb().userDao().insertAll(word);
+                App.getDb().userDao().insertAll(word);
             }
             book.close();
         } catch (Exception e) {

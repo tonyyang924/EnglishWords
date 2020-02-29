@@ -1,13 +1,16 @@
 package tw.tonyyang.englishwords;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import androidx.annotation.Nullable;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -17,42 +20,43 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 
-@EFragment(R.layout.fragment_word_list)
 public class WordListM1Fragment extends Fragment {
     private static final Logger logger = LoggerFactory.getLogger(WordListM1Fragment.class);
 
-    @ViewById(R.id.recyclerview_word_list)
-    RecyclerView recyclerView;
-
     private WordListM1Adapter wordListM1Adapter;
 
-    @AfterViews
-    protected void initViews() {
-        recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_word_list, container, false);
         wordListM1Adapter = new WordListM1Adapter(getAllCategory());
         wordListM1Adapter.setOnRecyclerViewListener(onRecyclerViewListener);
+        final RecyclerView recyclerView = view.findViewById(R.id.recyclerview_word_list);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(wordListM1Adapter);
+        return view;
     }
 
     private List<String> getAllCategory() {
-        return App_.getDb().userDao().getAllCategory();
+        return App.getDb().userDao().getAllCategory();
     }
 
     private WordListM1Adapter.OnRecyclerViewListener onRecyclerViewListener = new WordListM1Adapter.OnRecyclerViewListener() {
 
         @Override
         public void onItemClick(View v, int position) {
-            String category = wordListM1Adapter.getItem(position);
-            WordListM2Activity_.intent(getActivity())
-                    .category(category)
-                    .start();
+            final String category = wordListM1Adapter.getItem(position);
+            final Intent intent = new Intent(getActivity(), WordListM2Activity.class);
+            final Bundle bundle = new Bundle();
+            bundle.putString(WordListM2Activity.EXTRA_CATEGORY, category);
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
 
         @Override
         public void onItemLongClick(View v, int position) {
-
+            // do nothing
         }
     };
 
@@ -74,7 +78,7 @@ public class WordListM1Fragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRealTimeUpdateEvent(RealTimeUpdateEvent event) {
-        RealTimeUpdateEvent.Type type = event.getType();
+        final RealTimeUpdateEvent.Type type = event.getType();
         if (type == RealTimeUpdateEvent.Type.UPDATE_WORD_LIST) {
             logger.debug("UPDATE_WORD_LIST: " + event.getMessage());
             wordListM1Adapter.setWordList(getAllCategory());
