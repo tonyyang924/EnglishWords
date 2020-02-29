@@ -1,6 +1,6 @@
 package tw.tonyyang.englishwords.database;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
