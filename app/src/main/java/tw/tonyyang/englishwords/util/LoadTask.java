@@ -19,7 +19,7 @@ import tw.tonyyang.englishwords.RealTimeUpdateEvent;
 
 public class LoadTask extends EggTask<Void, Void, Void> {
 
-    public static final String TMP_FILE_NAME = "vocabulary.xls";
+    static final String TMP_FILE_NAME = "vocabulary.xls";
 
     private Tool tool;
 

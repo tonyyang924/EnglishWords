@@ -1,5 +1,6 @@
 package tw.tonyyang.englishwords;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,17 +8,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import tw.tonyyang.englishwords.db.Words;
-
 
 /**
  * Created by tonyyang on 2017/6/3.
  */
 
-public class WordsListM2Adapter extends RecyclerView.Adapter<WordsListM2Adapter.ViewHolder> {
+public class WordListM1Adapter extends RecyclerView.Adapter<WordListM1Adapter.ViewHolder> {
 
     interface OnRecyclerViewListener {
         void onItemClick(View v, int position);
@@ -25,7 +22,7 @@ public class WordsListM2Adapter extends RecyclerView.Adapter<WordsListM2Adapter.
         void onItemLongClick(View v, int position);
     }
 
-    private List<Words> wordsList = new ArrayList<>();
+    private List<String> categoryList;
 
     private OnRecyclerViewListener onRecyclerViewListener;
 
@@ -33,13 +30,18 @@ public class WordsListM2Adapter extends RecyclerView.Adapter<WordsListM2Adapter.
         this.onRecyclerViewListener = onRecyclerViewListener;
     }
 
-    public WordsListM2Adapter(List<Words> wordsList) {
-        this.wordsList = wordsList;
+    WordListM1Adapter(List<String> categoryList) {
+        this.categoryList = categoryList;
     }
 
+    void setWordList(List<String> categoryList) {
+        this.categoryList = categoryList;
+    }
+
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.wordslist_m2_item, viewGroup, false);
+        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.word_list_m1_item, viewGroup, false);
         ViewHolder vh = new ViewHolder(view);
         view.setOnClickListener(vh);
         return vh;
@@ -47,35 +49,28 @@ public class WordsListM2Adapter extends RecyclerView.Adapter<WordsListM2Adapter.
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Words words = wordsList.get(i);
-        viewHolder.image.setImageResource(R.drawable.book);
-        viewHolder.title.setText(words.getWord());
-        viewHolder.info.setText(words.getWordMean());
-        viewHolder.category.setText(words.getCategory());
+        String category = categoryList.get(i);
+        viewHolder.image.setImageResource(R.drawable.dot);
+        viewHolder.title.setText(category);
     }
 
     @Override
     public int getItemCount() {
-        return wordsList.size();
+        return categoryList.size();
     }
 
-    public Words getItem(int position) {
-        return wordsList.get(position);
+    String getItem(int position) {
+        return position < categoryList.size() ? categoryList.get(position) : null;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
-
         private ImageView image;
         private TextView title;
-        private TextView info;
-        private TextView category;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            image = (ImageView) itemView.findViewById(R.id.image);
-            title = (TextView) itemView.findViewById(R.id.title);
-            info = (TextView) itemView.findViewById(R.id.info);
-            category = (TextView) itemView.findViewById(R.id.category);
+            image = itemView.findViewById(R.id.image);
+            title = itemView.findViewById(R.id.title);
         }
 
         @Override

@@ -7,23 +7,18 @@ import android.widget.TextView;
 import com.hedgehog.ratingbar.RatingBar;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
-import tw.tonyyang.englishwords.db.Words;
-import tw.tonyyang.englishwords.db.WordsDao;
+import tw.tonyyang.englishwords.database.Word;
 
 
-@EActivity(R.layout.activity_wordslist_info)
-public class WordsListDetailActivity extends BaseActivity {
+@EActivity(R.layout.activity_word_list_info)
+public class WordListDetailActivity extends BaseActivity {
 
     @Extra
-    Words selectedWords;
-
-    @Bean
-    WordsDao wordsDao;
+    Word selectedWords;
 
     @ViewById(R.id.wordTV)
     TextView wordTV;
@@ -66,12 +61,10 @@ public class WordsListDetailActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 }

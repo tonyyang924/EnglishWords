@@ -1,5 +1,6 @@
 package tw.tonyyang.englishwords.util;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -16,13 +17,14 @@ import tw.tonyyang.englishwords.R;
 public abstract class EggTask<Params, Progress, Result> extends AsyncTask<Params, Progress, Result> {
     private static final Logger logger = LoggerFactory.getLogger(EggTask.class);
 
-    protected ProgressDialog progress;
+    private ProgressDialog progress;
 
+    @SuppressLint("StaticFieldLeak")
     protected Context context;
 
-    protected boolean isShowProgressView = true;
+    private boolean isShowProgressView = true;
 
-    protected EggTask(Context context) {
+    EggTask(Context context) {
         this.context = context;
         progress = new ProgressDialog(context);
         progress.setTitle(null);

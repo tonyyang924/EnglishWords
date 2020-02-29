@@ -9,6 +9,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import org.androidannotations.annotations.EApplication;
 
 import io.fabric.sdk.android.Fabric;
+import tw.tonyyang.englishwords.database.AppDatabase;
 
 /**
  * Created by tonyyang on 2017/5/15.
@@ -16,6 +17,8 @@ import io.fabric.sdk.android.Fabric;
 
 @EApplication
 public class App extends Application {
+
+    private static AppDatabase db;
 
     @Override
     public void onCreate() {
@@ -27,5 +30,10 @@ public class App extends Application {
         Fabric.with(fabric);
         FirebaseAnalytics.getInstance(this);
         Stetho.initializeWithDefaults(this);
+        db = AppDatabase.getAppDatabase(this);
+    }
+
+    public static AppDatabase getDb() {
+        return db;
     }
 }

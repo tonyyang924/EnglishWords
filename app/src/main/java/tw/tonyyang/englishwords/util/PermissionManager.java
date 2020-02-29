@@ -23,18 +23,17 @@ public class PermissionManager {
 
     public interface PermissionCallback {
         void onPermissionGranted();
+
         void onShowGuide();
     }
 
     private Context context;
 
-    // Storage Permissions
-
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-    public PermissionManager(Context context) {
+    PermissionManager(Context context) {
         this.context = context;
     }
 

@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
@@ -19,9 +20,6 @@ import org.androidannotations.annotations.ViewById;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
-
-import tw.tonyyang.englishwords.db.WordsDao;
 import tw.tonyyang.englishwords.util.LoadTask;
 import tw.tonyyang.englishwords.util.PermissionManager;
 import tw.tonyyang.englishwords.util.Tool;
@@ -36,9 +34,6 @@ public class FileChooserFragment extends Fragment {
 
     @Bean
     protected Tool tool;
-
-    @Bean
-    protected WordsDao wordsDao;
 
     @Bean
     protected PermissionManager permissionManager;
@@ -93,12 +88,7 @@ public class FileChooserFragment extends Fragment {
 
     @Click(R.id.submitBtn)
     public void submit() {
-        try {
-            wordsDao.deleteAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.debug("words delete all failed.");
-        }
+        App_.getDb().userDao().deleteAll();
         LoadTask task = new LoadTask(getActivity());
         task.setShowProgressView(true);
         task.execute();

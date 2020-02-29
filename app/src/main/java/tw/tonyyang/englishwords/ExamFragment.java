@@ -8,7 +8,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Bean;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OptionsItem;
@@ -16,15 +15,11 @@ import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.ViewsById;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 
-import tw.tonyyang.englishwords.db.Words;
-import tw.tonyyang.englishwords.db.WordsDao;
+import tw.tonyyang.englishwords.database.Word;
 
 import static tw.tonyyang.englishwords.R.id.ans1;
 import static tw.tonyyang.englishwords.R.id.ans2;
@@ -34,10 +29,6 @@ import static tw.tonyyang.englishwords.R.id.ans4;
 @EFragment(R.layout.fragment_exam)
 @OptionsMenu(R.menu.exam)
 public class ExamFragment extends Fragment {
-    private static final Logger logger = LoggerFactory.getLogger(ExamFragment.class);
-
-    @Bean
-    WordsDao wordsDao;
 
     @ViewById(R.id.statusTV)
     TextView statusTV;
@@ -80,8 +71,8 @@ public class ExamFragment extends Fragment {
     }
 
     @UiThread
-    protected void updateUI(List<Words> list) {
-        if (getAllDataCount() == 0 || list == null || list.size() <= 0) {
+    protected void updateUI(List<Word> list) {
+        if (App_.getDb().userDao().getCount() == 0 || list == null || list.size() <= 0) {
             statusTV.setVisibility(View.VISIBLE);
             chineseMeanTV.setText("");
             for (int i = 0; i < rGroup.getChildCount(); i++) {
@@ -120,23 +111,7 @@ public class ExamFragment extends Fragment {
         updateUI(getRandomData());
     }
 
-    private int getAllDataCount() {
-        int count = 0;
-        try {
-            long countOf = wordsDao.count();
-            count = (int) countOf;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return count;
-    }
-
-    private List<Words> getRandomData() {
-        try {
-            return wordsDao.getRawDao().queryBuilder().orderByRaw("RANDOM()").limit(4).query();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private List<Word> getRandomData() {
+        return App_.getDb().userDao().getRandomWords(4);
     }
 }
