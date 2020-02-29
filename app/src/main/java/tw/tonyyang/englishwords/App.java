@@ -6,8 +6,6 @@ import com.crashlytics.android.Crashlytics;
 import com.facebook.stetho.Stetho;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.androidannotations.annotations.EApplication;
-
 import io.fabric.sdk.android.Fabric;
 import tw.tonyyang.englishwords.database.AppDatabase;
 
@@ -15,7 +13,6 @@ import tw.tonyyang.englishwords.database.AppDatabase;
  * Created by tonyyang on 2017/5/15.
  */
 
-@EApplication
 public class App extends Application {
 
     private static AppDatabase db;
