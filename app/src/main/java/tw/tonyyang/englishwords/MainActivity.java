@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
                 case 0:
                     return new FileChooserFragment_();
                 case 1:
-                    return new WordsListM1Fragment_();
+                    return new WordListM1Fragment_();
                 case 2:
                     return new ExamFragment_();
             }
