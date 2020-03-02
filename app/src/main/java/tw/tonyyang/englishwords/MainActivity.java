@@ -2,40 +2,19 @@ package tw.tonyyang.englishwords;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.legacy.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
 
-@EActivity(R.layout.activity_main)
 public class MainActivity extends BaseActivity {
     private static final Logger logger = LoggerFactory.getLogger(MainActivity.class);
-
-    @ViewById(R.id.tabs)
-    protected TabLayout mTabs;
-
-    @ViewById(R.id.viewpager)
-    protected ViewPager mViewPager;
-
-    @AfterViews
-    protected void initViews() {
-        super.initViews();
-        mTabs.removeAllTabs();
-        mTabs.addTab(mTabs.newTab());
-        mTabs.addTab(mTabs.newTab());
-        mTabs.addTab(mTabs.newTab());
-        mViewPager.setAdapter(new SamplePagerAdapter(getFragmentManager(), mTabs.getTabCount()));
-        mTabs.setupWithViewPager(mViewPager);
-    }
 
     @Override
     protected void initToolbar() {
@@ -44,7 +23,24 @@ public class MainActivity extends BaseActivity {
         setSupportActionBar(toolbar);
     }
 
-    private class SamplePagerAdapter extends FragmentStatePagerAdapter {
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void onViewCreated() {
+        final TabLayout tabs = findViewById(R.id.tabs);
+        final ViewPager viewPager = findViewById(R.id.viewpager);
+        tabs.removeAllTabs();
+        tabs.addTab(tabs.newTab());
+        tabs.addTab(tabs.newTab());
+        tabs.addTab(tabs.newTab());
+        viewPager.setAdapter(new SamplePagerAdapter(getFragmentManager(), tabs.getTabCount()));
+        tabs.setupWithViewPager(viewPager);
+    }
+
+    private static class SamplePagerAdapter extends FragmentStatePagerAdapter {
         private int numOfTabs;
         private List<String> tabsTitle = Arrays.asList("讀取 / 更新", "單字列表", "單字考試");
 
@@ -62,11 +58,11 @@ public class MainActivity extends BaseActivity {
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    return new FileChooserFragment_();
+                    return new FileChooserFragment();
                 case 1:
-                    return new WordsListM1Fragment_();
+                    return new WordListM1Fragment();
                 case 2:
-                    return new ExamFragment_();
+                    return new ExamFragment();
             }
             return null;
         }

@@ -3,8 +3,6 @@ import com.android.ide.common.signing.KeytoolException
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
-def AAVersion = '4.5.2'
-
 // Initialize a new Properties() object called keystoreProperties.
 def keystoreProperties = new Properties()
 
@@ -23,23 +21,6 @@ if (keystorePropertiesFile.canRead()) {
     }
 } else {
     println '\'keystore.properties\' not found!'
-}
-
-def getMyApiKey(String property) {
-    Properties properties = new Properties()
-    def apikeyFile = rootProject.file("apikey")
-    if (apikeyFile.exists()) {
-        properties.load(new FileInputStream(apikeyFile))
-    }
-    return properties.getProperty(property)
-}
-
-static def isEmpty(String str) {
-    return str == null || str == ""
-}
-
-static def isNonEmpty(String str) {
-    return !isEmpty(str)
 }
 
 static def getJenkinsBuildNumber() {
@@ -78,14 +59,15 @@ android {
             }
         }
     }
-    compileSdkVersion 28
+    buildToolsVersion '29.0.3'
+    compileSdkVersion 29
     defaultConfig {
         applicationId "tw.tonyyang.englishwords"
         minSdkVersion 19
-        targetSdkVersion 28
-        versionCode 2
-        versionName "1.0.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        targetSdkVersion 29
+        versionCode 1
+        versionName "0.1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         project.ext.set("archivesBaseName", "englishwords_ver_" + versionName + "-" + getJenkinsBuildNumber())
 
         javaCompileOptions {
@@ -96,81 +78,53 @@ android {
         }
     }
     buildTypes {
-        def dropBoxAPiKey = getMyApiKey("dropBoxApiKey")
-        def facebookAppId = getMyApiKey("facebookAppId")
-        def fbLoginProtocolScheme = getMyApiKey("fbLoginProtocolScheme")
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix '-DEBUG'
             debuggable true
             minifyEnabled false
             signingConfig signingConfigs.debug
-            if (isNonEmpty(dropBoxAPiKey)) {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
-            } else {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
-            }
-            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
-                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
-            } else {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
-                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
-            }
         }
         release {
             debuggable false
             minifyEnabled false
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            if (isNonEmpty(dropBoxAPiKey)) {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"dropBoxAPiKey\"")
-            } else {
-                buildConfigField("String", "DROPBOX_API_KEY", "\"\"")
-            }
-            if (isNonEmpty(facebookAppId) && isNonEmpty(fbLoginProtocolScheme)) {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : facebookAppId,
-                                        FB_LOGIN_PROTOCOL_SCHEME: fbLoginProtocolScheme]
-            } else {
-                manifestPlaceholders = [FACEBOOK_APP_ID         : "",
-                                        FB_LOGIN_PROTOCOL_SCHEME: ""]
-            }
         }
     }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
+    packagingOptions {
+        exclude 'META-INF/proguard/androidx-annotations.pro'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('androidx.test.espresso:espresso-core:3.1.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    //noinspection GradleCompatible
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:support-v13:28.0.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'junit:junit:4.12'
-    implementation 'com.android.support:recyclerview-v7:28.0.0'
-    implementation 'com.android.support:design:28.0.0'
-    annotationProcessor "org.androidannotations:androidannotations:$AAVersion"
-    implementation "org.androidannotations:androidannotations-api:$AAVersion"
-    annotationProcessor "org.androidannotations:ormlite:$AAVersion"
-    implementation "org.androidannotations:ormlite-api:$AAVersion"
+    implementation 'com.google.android.material:material:1.1.0'
     implementation 'org.slf4j:slf4j-api:1.7.25'
-    implementation "com.j256.ormlite:ormlite-core:4.48"
-    implementation "com.j256.ormlite:ormlite-android:4.48"
-    implementation 'com.google.code.gson:gson:2.8.4'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     implementation 'com.hedgehog.ratingbar:app:1.1.2'
-    implementation 'com.google.firebase:firebase-core:16.0.6'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
-    implementation 'com.facebook.android:facebook-android-sdk:4.30.0'
+    implementation 'com.google.firebase:firebase-core:17.2.2'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'org.greenrobot:eventbus:3.1.1'
     implementation 'com.facebook.stetho:stetho:1.5.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
 }
 
 repositories {

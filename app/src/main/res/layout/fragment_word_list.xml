@@ -4,12 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/words_recyclerView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerview_word_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

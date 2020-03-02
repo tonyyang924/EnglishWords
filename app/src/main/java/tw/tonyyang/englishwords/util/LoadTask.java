@@ -19,13 +19,13 @@ import tw.tonyyang.englishwords.RealTimeUpdateEvent;
 
 public class LoadTask extends EggTask<Void, Void, Void> {
 
-    public static final String TMP_FILE_NAME = "vocabulary.xls";
+    static final String TMP_FILE_NAME = "vocabulary.xls";
 
     private Tool tool;
 
     public LoadTask(Context context) {
         super(context);
-        tool = Tool_.getInstance_(context);
+        tool = Tool.getInstance();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class LoadTask extends EggTask<Void, Void, Void> {
                 e.printStackTrace();
             }
         }
-        tool.readExcel();
+        tool.readExcel(context);
         return null;
     }
 
