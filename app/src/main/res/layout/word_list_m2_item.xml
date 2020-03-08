@@ -7,40 +7,41 @@
     android:padding="5dp">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_centerVertical="true"
         android:padding="5dp"
-        android:src="@drawable/book" />
+        android:src="@drawable/book"
+        tools:ignore="ContentDescription" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="70dp"
-        android:layout_toRightOf="@id/image">
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="70dp"
+        android:layout_toEndOf="@+id/iv_image">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:textColor="#000"
             android:textSize="18sp"
             tools:text="applicant" />
 
         <TextView
-            android:id="@+id/info"
+            android:id="@+id/tv_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#7573FF"
@@ -50,12 +51,12 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/category"
+        android:id="@+id/tv_category"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@id/relativeLayout1"
-        android:layout_marginRight="10dp"
+        android:layout_alignTop="@+id/relativeLayout1"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
         android:textColor="#D72523"
         android:textSize="15sp"
         tools:text="LEVEL1" />
