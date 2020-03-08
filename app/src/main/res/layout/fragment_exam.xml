@@ -4,32 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
     android:paddingLeft="16dp"
+    android:paddingTop="16dp"
     android:paddingRight="16dp"
-    android:paddingTop="16dp">
+    android:paddingBottom="16dp">
 
     <TextView
-        android:id="@+id/statusTV"
+        android:id="@+id/tv_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/exam_status"
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/chmeanTV"
+        android:id="@+id/tv_chinese_mean"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="30sp"
         tools:text="v. 促進，培養" />
 
     <RadioGroup
-        android:id="@+id/rgroup"
+        android:id="@+id/rg_ans"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <RadioButton
-            android:id="@+id/ans1"
+            android:id="@+id/rb_ans1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
@@ -37,21 +37,21 @@
             tools:text="foster*" />
 
         <RadioButton
-            android:id="@+id/ans2"
+            android:id="@+id/rb_ans2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
             tools:text="randomly*" />
 
         <RadioButton
-            android:id="@+id/ans3"
+            android:id="@+id/rb_ans3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
             tools:text="revision*" />
 
         <RadioButton
-            android:id="@+id/ans4"
+            android:id="@+id/rb_ans4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="25sp"
@@ -59,16 +59,16 @@
     </RadioGroup>
 
     <Button
-        android:id="@+id/answerBtn"
+        android:id="@+id/btn_answer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="20dp"
         android:paddingTop="20dp"
+        android:paddingBottom="20dp"
         android:text="@string/common_ok"
         android:textSize="30sp" />
 
     <TextView
-        android:id="@+id/resultTV"
+        android:id="@+id/tv_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="25sp" />
