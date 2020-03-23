@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.RadioButton
 import kotlinx.android.synthetic.main.fragment_exam.*
+import kotlinx.coroutines.*
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.database.Word
 import java.util.*
@@ -37,11 +38,11 @@ class ExamFragment : Fragment() {
             }
             tv_result.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
         }
-        updateUI(randomData)
+        updateUI(getRandomWordList())
     }
 
-    private fun updateUI(list: List<Word?>?) {
-        if (db?.userDao()?.count == 0 || list == null || list.isEmpty()) {
+    private fun updateUI(list: List<Word>) {
+        if (getWordCount() == 0 || list.isEmpty()) {
             tv_status.visibility = View.VISIBLE
             tv_chinese_mean.text = ""
             for (i in 0 until rg_ans.childCount) {
@@ -50,8 +51,8 @@ class ExamFragment : Fragment() {
             btn_answer.isEnabled = false
         } else {
             tv_status.visibility = View.GONE
-            trueWord = list[0]?.word?.replace("*", "")
-            tv_chinese_mean.text = list[0]?.wordMean
+            trueWord = list[0].word.replace("*", "")
+            tv_chinese_mean.text = list[0].wordMean
             var rnd: Int
             val random = IntArray(4)
             val rndSet: HashSet<Int> = HashSet<Int>(4)
@@ -66,8 +67,17 @@ class ExamFragment : Fragment() {
         }
     }
 
-    private val randomData: List<Word?>?
-        get() = db?.userDao()?.getRandomWords(4)
+    private fun getRandomWordList(): List<Word> = runBlocking {
+        withContext(Dispatchers.Default) {
+            db?.userDao()?.getRandomWords(4)
+        } ?: mutableListOf()
+    }
+
+    private fun getWordCount(): Int = runBlocking {
+        withContext(Dispatchers.Default) {
+            db?.userDao()?.count
+        } ?: 0
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.exam, menu)
@@ -79,7 +89,7 @@ class ExamFragment : Fragment() {
             activity?.onBackPressed()
             return true
         } else if (item.itemId == R.id.action_random) {
-            updateUI(randomData)
+            updateUI(getRandomWordList())
             return true
         }
         return super.onOptionsItemSelected(item)

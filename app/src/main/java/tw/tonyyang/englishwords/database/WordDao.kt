@@ -20,8 +20,8 @@ interface WordDao {
     fun getCategoryWords(category: String): List<Word>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(vararg words: Word)
+    suspend fun insertAll(vararg words: Word)
 
     @Query("DELETE FROM word")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

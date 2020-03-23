@@ -9,16 +9,19 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import tw.tonyyang.englishwords.database.Word
 
-class WordListM2Adapter internal constructor(private val wordList: List<Word>) : RecyclerView.Adapter<WordListM2Adapter.ViewHolder>() {
+class WordListM2Adapter: RecyclerView.Adapter<WordListM2Adapter.ViewHolder>() {
     interface OnRecyclerViewListener {
         fun onItemClick(v: View?, position: Int)
         fun onItemLongClick(v: View?, position: Int)
     }
 
-    private var onRecyclerViewListener: OnRecyclerViewListener? = null
-    fun setOnRecyclerViewListener(onRecyclerViewListener: OnRecyclerViewListener?) {
-        this.onRecyclerViewListener = onRecyclerViewListener
-    }
+    var wordList: List<Word> = mutableListOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
+    var onRecyclerViewListener: OnRecyclerViewListener? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.word_list_m2_item, viewGroup, false)

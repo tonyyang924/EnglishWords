@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_word_list.*
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -20,7 +21,7 @@ class WordListM1Fragment : Fragment() {
     }
 
     private val wordListM1Adapter: WordListM1Adapter by lazy {
-        WordListM1Adapter(allCategory)
+        WordListM1Adapter()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -29,16 +30,22 @@ class WordListM1Fragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        wordListM1Adapter.setOnRecyclerViewListener(onRecyclerViewListener)
+        wordListM1Adapter.onRecyclerViewListener = onRecyclerViewListener
         recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             adapter = wordListM1Adapter
         }
+        updateCategoryList()
     }
 
-    private val allCategory: List<String>
-        get() = db?.userDao()?.allCategory ?: listOf()
+    private fun updateCategoryList() = GlobalScope.launch(Dispatchers.Main) {
+        withContext(Dispatchers.Default) {
+            db?.userDao()?.allCategory ?: listOf()
+        }.let {
+            wordListM1Adapter.categoryList = it
+        }
+    }
 
     private val onRecyclerViewListener: WordListM1Adapter.OnRecyclerViewListener = object : WordListM1Adapter.OnRecyclerViewListener {
         override fun onItemClick(v: View?, position: Int) {
@@ -74,8 +81,7 @@ class WordListM1Fragment : Fragment() {
         val type = event.type
         if (type === RealTimeUpdateEvent.Type.UPDATE_WORD_LIST) {
             logger.debug("UPDATE_WORD_LIST: " + event.message)
-            wordListM1Adapter.setWordList(allCategory)
-            wordListM1Adapter.notifyDataSetChanged()
+            updateCategoryList()
         }
     }
 }

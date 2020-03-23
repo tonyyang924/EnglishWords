@@ -14,6 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.fragment_dropboxchooser.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.util.LoadTask
@@ -33,10 +37,15 @@ class FileChooserFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
-            db?.userDao()?.deleteAll()
-            val task = LoadTask(activity as Context)
-            task.setShowProgressView(true)
-            task.execute()
+            GlobalScope.launch(Dispatchers.Main) {
+                withContext(Dispatchers.Default) {
+                    db?.userDao()?.deleteAll()
+                }.let {
+                    val task = LoadTask(activity as Context)
+                    task.setShowProgressView(true)
+                    task.execute()
+                }
+            }
         }
         btn_submit.isEnabled = false
         btn_chooser.setOnClickListener {
