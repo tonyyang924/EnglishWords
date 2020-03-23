@@ -8,20 +8,19 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class WordListM1Adapter internal constructor(private var categoryList: List<String>) : RecyclerView.Adapter<WordListM1Adapter.ViewHolder>() {
+class WordListM1Adapter : RecyclerView.Adapter<WordListM1Adapter.ViewHolder>() {
     interface OnRecyclerViewListener {
         fun onItemClick(v: View?, position: Int)
         fun onItemLongClick(v: View?, position: Int)
     }
 
-    private var onRecyclerViewListener: OnRecyclerViewListener? = null
-    fun setOnRecyclerViewListener(onRecyclerViewListener: OnRecyclerViewListener?) {
-        this.onRecyclerViewListener = onRecyclerViewListener
-    }
+    var onRecyclerViewListener: OnRecyclerViewListener? = null
 
-    fun setWordList(categoryList: List<String>) {
-        this.categoryList = categoryList
-    }
+    var categoryList: List<String> = mutableListOf()
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
         val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.word_list_m1_item, viewGroup, false)
