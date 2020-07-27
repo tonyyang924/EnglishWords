@@ -8,10 +8,6 @@ import tw.tonyyang.englishwords.R
 
 abstract class EggTask<Params, Progress, Result> internal constructor(private val context: Context) : AsyncTask<Params, Progress, Result>() {
 
-    companion object {
-        private val logger = LoggerFactory.getLogger(EggTask::class.java)
-    }
-
     private val progress: ProgressDialog by lazy {
         ProgressDialog(context).apply {
             setTitle(null)
@@ -52,5 +48,9 @@ abstract class EggTask<Params, Progress, Result> internal constructor(private va
         } catch (e: IllegalArgumentException) {
             logger.debug(e.toString())
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(EggTask::class.java)
     }
 }

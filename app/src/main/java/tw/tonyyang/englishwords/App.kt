@@ -10,12 +10,6 @@ import tw.tonyyang.englishwords.database.AppDatabase.Companion.getDatabase
 
 class App : Application() {
 
-    companion object {
-        @JvmStatic
-        var db: AppDatabase? = null
-            private set
-    }
-
     override fun onCreate() {
         super.onCreate()
         val fabric = Fabric.Builder(this)
@@ -26,5 +20,11 @@ class App : Application() {
         FirebaseAnalytics.getInstance(this)
         Stetho.initializeWithDefaults(this)
         db = getDatabase(this)
+    }
+
+    companion object {
+        @JvmStatic
+        var db: AppDatabase? = null
+            private set
     }
 }
