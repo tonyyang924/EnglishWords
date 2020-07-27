@@ -26,9 +26,6 @@ import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.util.Tool
 
 class FileChooserFragment : Fragment() {
-    companion object {
-        private val logger = LoggerFactory.getLogger(FileChooserFragment::class.java)
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater?.inflate(R.layout.fragment_dropboxchooser, container, false)
@@ -107,5 +104,9 @@ class FileChooserFragment : Fragment() {
                 Toast.makeText(activity, "請取得內部檔案讀取權限，否則無法讀取本地端檔案。", Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(FileChooserFragment::class.java)
     }
 }

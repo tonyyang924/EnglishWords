@@ -16,9 +16,6 @@ import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
 
 class WordListM1Fragment : Fragment() {
-    companion object {
-        private val logger = LoggerFactory.getLogger(WordListM1Fragment::class.java)
-    }
 
     private val wordListM1Adapter: WordListM1Adapter by lazy {
         WordListM1Adapter()
@@ -83,5 +80,9 @@ class WordListM1Fragment : Fragment() {
             logger.debug("UPDATE_WORD_LIST: " + event.message)
             updateCategoryList()
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(WordListM1Fragment::class.java)
     }
 }
