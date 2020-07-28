@@ -4,7 +4,8 @@ import android.app.Fragment
 import android.app.FragmentManager
 import androidx.appcompat.widget.Toolbar
 import androidx.legacy.app.FragmentStatePagerAdapter
-import kotlinx.android.synthetic.main.activity_main.*
+import androidx.viewpager.widget.ViewPager
+import com.google.android.material.tabs.TabLayout
 import java.util.*
 
 class MainActivity : BaseActivity() {
@@ -18,6 +19,8 @@ class MainActivity : BaseActivity() {
         get() = R.layout.activity_main
 
     override fun onViewCreated() {
+        val tabs = findViewById<TabLayout>(R.id.tabs)
+        val viewpager = findViewById<ViewPager>(R.id.viewpager)
         tabs.removeAllTabs()
         tabs.addTab(tabs.newTab())
         tabs.addTab(tabs.newTab())

@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_word_list.*
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
+import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
 
 class WordListM1Fragment : Fragment() {
 
@@ -21,14 +21,17 @@ class WordListM1Fragment : Fragment() {
         WordListM1Adapter()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_word_list, container, false)
+    private lateinit var binding: FragmentWordListBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentWordListBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         wordListM1Adapter.onRecyclerViewListener = onRecyclerViewListener
-        recyclerview.apply {
+        binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
             adapter = wordListM1Adapter

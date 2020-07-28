@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_word_list.*
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,7 +34,7 @@ class WordListM2Activity : BaseActivity() {
     }
 
     private fun initRecyclerViews() {
-        recyclerView.apply {
+        findViewById<RecyclerView>(R.id.recyclerView).apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@WordListM2Activity)
             adapter = wordListM2Adapter
