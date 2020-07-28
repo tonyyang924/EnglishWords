@@ -22,7 +22,7 @@
             android:layout_marginBottom="10dp">
 
             <TextView
-                android:id="@+id/categoryTV"
+                android:id="@+id/tv_category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
@@ -41,7 +41,8 @@
                 hedgehog:starHalf="@mipmap/star_half"
                 hedgehog:starImageHeight="20dp"
                 hedgehog:starImagePadding="0dp"
-                hedgehog:starImageWidth="30dp" />
+                hedgehog:starImageWidth="30dp"
+                android:focusable="true" />
 
         </LinearLayout>
 
@@ -51,7 +52,7 @@
             android:layout_marginBottom="10dp">
 
             <TextView
-                android:id="@+id/wordTV"
+                android:id="@+id/tv_word"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
@@ -72,7 +73,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/wordmeanTV"
+                android:id="@+id/tv_wordmean"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
@@ -92,7 +93,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/wordsentenceTV"
+                android:id="@+id/tv_word_sentence"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
