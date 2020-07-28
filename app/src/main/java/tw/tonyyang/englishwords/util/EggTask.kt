@@ -1,20 +1,15 @@
 package tw.tonyyang.englishwords.util
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
+import androidx.appcompat.app.AlertDialog
 import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.R
 
 abstract class EggTask<Params, Progress, Result> internal constructor(private val context: Context) : AsyncTask<Params, Progress, Result>() {
 
-    private val progress: ProgressDialog by lazy {
-        ProgressDialog(context).apply {
-            setTitle(null)
-            setMessage(context.getString(R.string.loading_message))
-            setCancelable(false)
-            setCanceledOnTouchOutside(false)
-        }
+    private val progress: AlertDialog by lazy {
+        UiUtils.getProgressDialog(context, context.getString(R.string.loading_message))
     }
 
     private var isShowProgressView = true
