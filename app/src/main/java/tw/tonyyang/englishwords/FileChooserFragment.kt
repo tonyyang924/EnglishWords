@@ -1,7 +1,6 @@
 package tw.tonyyang.englishwords
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -34,7 +34,7 @@ class FileChooserFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
