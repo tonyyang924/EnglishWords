@@ -13,13 +13,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import kotlinx.android.synthetic.main.fragment_dropboxchooser.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
+import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.util.LoadTask
 import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
@@ -27,13 +27,16 @@ import tw.tonyyang.englishwords.util.Tool
 
 class FileChooserFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_dropboxchooser, container, false)
+    private lateinit var binding: FragmentDropboxchooserBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentDropboxchooserBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_submit.setOnClickListener {
+        binding.btnSubmit.setOnClickListener {
             GlobalScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
                     db?.userDao()?.deleteAll()
@@ -44,8 +47,8 @@ class FileChooserFragment : Fragment() {
                 }
             }
         }
-        btn_submit.isEnabled = false
-        btn_chooser.setOnClickListener {
+        binding.btnSubmit.isEnabled = false
+        binding.btnChooser.setOnClickListener {
             if (Build.VERSION.SDK_INT >= 23) {
                 activity?.let { it1 ->
                     PermissionManager.verifyStoragePermissions(it1, this@FileChooserFragment, object : PermissionCallback {
@@ -87,9 +90,9 @@ class FileChooserFragment : Fragment() {
                 val uri = data?.data
                 if (uri != null) {
                     Tool.fileUrl = uri.toString()
-                    tv_filename.text = Tool.fileUrl
-                    tv_file_size.text = ""
-                    btn_submit.isEnabled = true
+                    binding.tvFilename.text = Tool.fileUrl
+                    binding.tvFileSize.text = ""
+                    binding.btnSubmit.isEnabled = true
                 }
             }
         }

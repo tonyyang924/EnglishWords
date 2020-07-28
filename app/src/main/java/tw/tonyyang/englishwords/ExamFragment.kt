@@ -4,10 +4,10 @@ import android.app.Fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.RadioButton
-import kotlinx.android.synthetic.main.fragment_exam.*
 import kotlinx.coroutines.*
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.database.Word
+import tw.tonyyang.englishwords.databinding.FragmentExamBinding
 import java.util.*
 
 class ExamFragment : Fragment() {
@@ -15,44 +15,47 @@ class ExamFragment : Fragment() {
     private var trueWord: String? = null
 
     private val ansRadioBtnList: List<RadioButton> by lazy {
-        listOf(rb_ans1, rb_ans2, rb_ans3, rb_ans4)
+        listOf(binding.rbAns1, binding.rbAns2, binding.rbAns3, binding.rbAns4)
     }
+
+    private lateinit var binding: FragmentExamBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.fragment_exam, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentExamBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        btn_answer.setOnClickListener {
+        binding.btnAnswer.setOnClickListener {
             var result = ""
             for (i in ansRadioBtnList.indices) {
                 if (ansRadioBtnList[i].isChecked) {
                     result = ansRadioBtnList[i].text.toString()
                 }
             }
-            tv_result.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
+            binding.tvResult.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
         }
         updateUI(getRandomWordList())
     }
 
     private fun updateUI(list: List<Word>) {
         if (getWordCount() == 0 || list.isEmpty()) {
-            tv_status.visibility = View.VISIBLE
-            tv_chinese_mean.text = ""
-            for (i in 0 until rg_ans.childCount) {
-                rg_ans.getChildAt(i).isEnabled = false
+            binding.tvStatus.visibility = View.VISIBLE
+            binding.tvChineseMean.text = ""
+            for (i in 0 until binding.rgAns.childCount) {
+                binding.rgAns.getChildAt(i).isEnabled = false
             }
-            btn_answer.isEnabled = false
+            binding.btnAnswer.isEnabled = false
         } else {
-            tv_status.visibility = View.GONE
+            binding.tvStatus.visibility = View.GONE
             trueWord = list[0].word.replace("*", "")
-            tv_chinese_mean.text = list[0].wordMean
+            binding.tvChineseMean.text = list[0].wordMean
             var rnd: Int
             val random = IntArray(4)
             val rndSet: HashSet<Int> = HashSet<Int>(4)

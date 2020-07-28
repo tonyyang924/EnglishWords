@@ -1,7 +1,8 @@
 package tw.tonyyang.englishwords
 
 import android.view.MenuItem
-import kotlinx.android.synthetic.main.activity_word_list_info.*
+import android.widget.TextView
+import com.hedgehog.ratingbar.RatingBar
 import tw.tonyyang.englishwords.database.Word
 
 class WordListDetailActivity : BaseActivity() {
@@ -28,11 +29,11 @@ class WordListDetailActivity : BaseActivity() {
 
     private fun setViews() {
         selectedWords.let {
-            tv_word.text = selectedWords?.word?.replace("*", "")
-            tv_wordmean.text = selectedWords?.wordMean
-            tv_word_sentence.text = selectedWords?.wordSentence
-            tv_category.text = selectedWords?.category
-            ratingbar.setStar(selectedWords?.wordStar?.toFloat() ?: 0F)
+            findViewById<TextView>(R.id.tv_word).text = selectedWords?.word?.replace("*", "")
+            findViewById<TextView>(R.id.tv_wordmean).text = selectedWords?.wordMean
+            findViewById<TextView>(R.id.tv_word_sentence).text = selectedWords?.wordSentence
+            findViewById<TextView>(R.id.tv_category).text = selectedWords?.category
+            findViewById<RatingBar>(R.id.ratingbar).setStar(selectedWords?.wordStar?.toFloat() ?: 0F)
         }
     }
 
