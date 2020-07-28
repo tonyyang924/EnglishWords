@@ -1,9 +1,9 @@
 package tw.tonyyang.englishwords
 
-import android.app.Fragment
 import android.os.Bundle
 import android.view.*
 import android.widget.RadioButton
+import androidx.fragment.app.Fragment
 import kotlinx.coroutines.*
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.database.Word
@@ -65,7 +65,7 @@ class ExamFragment : Fragment() {
                 random[i] = rnd
             }
             for (i in ansRadioBtnList.indices) {
-                ansRadioBtnList[i].text = list[random[i]]?.word?.replace("*", "")
+                ansRadioBtnList[i].text = list[random[i]].word.replace("*", "")
             }
         }
     }
