@@ -19,10 +19,11 @@ abstract class BaseActivity : AppCompatActivity() {
 
     @CallSuper
     protected open fun initToolbar() {
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setLogo(R.drawable.ic_launcher)
-        toolbar.title = getString(R.string.app_name)
-        toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.white))
+        val toolbar = findViewById<Toolbar>(R.id.toolbar).apply {
+            setLogo(R.drawable.ic_launcher)
+            title = getString(R.string.app_name)
+            setTitleTextColor(ContextCompat.getColor(this@BaseActivity, R.color.white))
+        }
         setSupportActionBar(toolbar)
     }
 
