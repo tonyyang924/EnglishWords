@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import tw.tonyyang.englishwords.FileChooserFragment
 import tw.tonyyang.englishwords.RequestCodeStore
+import tw.tonyyang.englishwords.preference.GlobalPreference
 
 object PermissionManager {
     private val PERMISSIONS_STORAGE = arrayOf(
@@ -36,13 +37,13 @@ object PermissionManager {
     }
 
     private fun getFlag(context: Context): Boolean {
-        return GlobalPreference.getPreference(context).getBoolean(GlobalPreference.FLAG_PERMISSIONS_STORAGE)
+        return GlobalPreference.getBoolean(context, GlobalPreference.FLAG_PERMISSIONS_STORAGE)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
     private fun setFlag(activity: Activity) {
         val flag = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        GlobalPreference.getPreference(activity).put(GlobalPreference.FLAG_PERMISSIONS_STORAGE, flag)
+        GlobalPreference.put(context = activity, key = GlobalPreference.FLAG_PERMISSIONS_STORAGE, value = flag)
     }
 
     @TargetApi(Build.VERSION_CODES.M)
