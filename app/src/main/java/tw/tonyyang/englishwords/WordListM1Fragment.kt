@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
@@ -39,7 +40,7 @@ class WordListM1Fragment : Fragment() {
         updateCategoryList()
     }
 
-    private fun updateCategoryList() = GlobalScope.launch(Dispatchers.Main) {
+    private fun updateCategoryList() = lifecycleScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
             db?.userDao()?.allCategory ?: listOf()
         }.let {

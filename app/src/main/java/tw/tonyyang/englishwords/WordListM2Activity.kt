@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.App.Companion.db
@@ -42,7 +42,7 @@ class WordListM2Activity : BaseActivity() {
         wordListM2Adapter.onRecyclerViewListener = onRecyclerViewListener
     }
 
-    private fun updateWordList() = GlobalScope.launch(Dispatchers.Main) {
+    private fun updateWordList() = lifecycleScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
             db?.userDao()?.getCategoryWords(category) ?: listOf()
         }.let {
