@@ -15,19 +15,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import jxl.Workbook
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
-import tw.tonyyang.englishwords.database.Word
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
+import tw.tonyyang.englishwords.util.FileChooserUtils
 import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.util.UiUtils
-import java.io.*
-import java.net.HttpURLConnection
-import java.net.URL
 
 class FileChooserFragment : Fragment() {
 
@@ -47,59 +43,16 @@ class FileChooserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
-            lifecycleScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch {
                 progress?.show()
-                withContext(Dispatchers.IO) {
-                    db?.userDao()?.deleteAll()
-                    var data = ByteArray(0)
-                    if (fileUrl?.contains("content://") == true || fileUrl?.contains("file:///") == true) {
-                        data = readFile(fileUrl)
-                    } else {
-                        try {
-                            val url = URL(fileUrl)
-                            val arrayOutputStream = ByteArrayOutputStream()
-                            val connection = url.openConnection() as? HttpURLConnection
-                            connection?.connectTimeout = 10 * 1000
-                            connection?.connect()
-                            if (connection?.responseCode == 200) {
-                                val inputStream = connection.inputStream
-                                val buffer = ByteArray(10 * 1024)
-                                while (true) {
-                                    val len = inputStream.read(buffer)
-                                    if (len == -1) {
-                                        break
-                                    }
-                                    arrayOutputStream.write(buffer, 0, len)
-                                }
-                                arrayOutputStream.close()
-                                inputStream.close()
-                                data = arrayOutputStream.toByteArray()
-                            }
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    var fileOutputStream: FileOutputStream? = null
-                    try {
-                        fileOutputStream = activity?.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE)
-                    } catch (e: FileNotFoundException) {
-                        e.printStackTrace()
-                    }
-                    if (fileOutputStream != null) {
-                        try {
-                            fileOutputStream.write(data)
-                            fileOutputStream.close()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                        }
-                    }
-                    readExcel(activity as? Context)
-                }
-                progress?.dismiss()
+                db?.userDao()?.deleteAll()
+                FileChooserUtils.importExcelDataToDb(activity, fileUrl)
                 Toast.makeText(context, activity?.getString(R.string.loading_complete), Toast.LENGTH_LONG).show()
-                val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST)
-                realTimeUpdateEvent.message = "更新列表資料"
+                val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
+                    message = "更新列表資料"
+                }
                 EventBus.getDefault().post(realTimeUpdateEvent)
+                progress?.dismiss()
             }
         }
         binding.btnSubmit.isEnabled = false
@@ -123,48 +76,6 @@ class FileChooserFragment : Fragment() {
             } else {
                 chooseFileFromLocal()
             }
-        }
-    }
-
-    private fun readFile(filePath: String?): ByteArray {
-        val arrayOutputStream = ByteArrayOutputStream()
-        val uri = Uri.parse(filePath)
-        activity?.contentResolver?.openInputStream(uri)?.use {
-            val buffer = ByteArray(10 * 1024)
-            while (true) {
-                val len = it.read(buffer)
-                if (len == -1) {
-                    break
-                }
-                arrayOutputStream.write(buffer, 0, len)
-            }
-            arrayOutputStream.close()
-        }
-        return arrayOutputStream.toByteArray()
-    }
-
-    private suspend fun readExcel(context: Context?) {
-        if (context == null) {
-            return
-        }
-        // TODO: fix this warning
-        context.openFileInput(TMP_FILE_NAME).use {
-            val book = Workbook.getWorkbook(it)
-            book.numberOfSheets
-            val sheet = book.getSheet(0)
-            val rows = sheet.rows
-            for (i in 0 until rows) {
-                if (sheet.getCell(0, i).contents[0].toString() == "#") continue
-                val word = Word(
-                        word = sheet.getCell(0, i).contents,
-                        wordMean = sheet.getCell(1, i).contents,
-                        category = sheet.getCell(2, i).contents,
-                        wordStar = sheet.getCell(3, i).contents,
-                        wordSentence = sheet.getCell(4, i).contents
-                )
-                db?.userDao()?.insertAll(word)
-            }
-            book.close()
         }
     }
 
@@ -208,6 +119,5 @@ class FileChooserFragment : Fragment() {
 
     companion object {
         private val logger = LoggerFactory.getLogger(FileChooserFragment::class.java)
-        private const val TMP_FILE_NAME = "vocabulary.xls"
     }
 }
