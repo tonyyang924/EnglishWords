@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
-import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.util.FileChooserUtils
@@ -94,7 +93,7 @@ class FileChooserFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RequestCodeStore.FILE_CHOOSER_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                logger.debug("file chooser")
+                Logger.d(TAG, "file chooser")
                 val uri = data?.data
                 if (uri != null) {
                     fileUrl = uri.toString()
@@ -118,6 +117,6 @@ class FileChooserFragment : Fragment() {
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(FileChooserFragment::class.java)
+        private val TAG = FileChooserFragment::class.java.simpleName
     }
 }
