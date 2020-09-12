@@ -137,7 +137,6 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.core_testing_version"
 
     // 3rd party libs
-    implementation "org.slf4j:slf4j-api:$rootProject.slf4j_version"
     implementation "com.google.code.gson:gson:$rootProject.gson_version"
     implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttp_version"
     implementation "com.nostra13.universalimageloader:universal-image-loader:$rootProject.imageloader_version"

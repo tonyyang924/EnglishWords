@@ -7,6 +7,7 @@ import jxl.Workbook
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.App
+import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.database.Word
 import java.io.ByteArrayOutputStream
 import java.io.FileNotFoundException
@@ -18,10 +19,13 @@ import java.net.URL
 class FileChooserUtils private constructor() {
 
     companion object {
+        private val TAG = FileChooserUtils::class.java.simpleName
         private const val TMP_FILE_NAME = "vocabulary.xls"
 
         @Throws(Exception::class)
         suspend fun importExcelDataToDb(activity: Activity?, fileUrl: String?) = withContext(Dispatchers.IO) {
+            Logger.d(TAG, "[importExcelDataToDb] start")
+
             var data = ByteArray(0)
             if (fileUrl?.contains("content://") == true || fileUrl?.contains("file:///") == true) {
                 data = readFile(activity, fileUrl)
@@ -78,6 +82,8 @@ class FileChooserUtils private constructor() {
                 }
                 book.close()
             }
+
+            Logger.d(TAG, "[importExcelDataToDb] end")
         }
 
         private fun readFile(activity: Activity?, filePath: String?): ByteArray {

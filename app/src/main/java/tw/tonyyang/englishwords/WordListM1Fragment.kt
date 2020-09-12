@@ -12,7 +12,6 @@ import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.slf4j.LoggerFactory
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
 
@@ -81,12 +80,12 @@ class WordListM1Fragment : Fragment() {
     fun onRealTimeUpdateEvent(event: RealTimeUpdateEvent) {
         val type = event.type
         if (type === RealTimeUpdateEvent.Type.UPDATE_WORD_LIST) {
-            logger.debug("UPDATE_WORD_LIST: " + event.message)
+            Logger.d(TAG, "UPDATE_WORD_LIST: " + event.message)
             updateCategoryList()
         }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(WordListM1Fragment::class.java)
+        private val TAG = WordListM1Fragment::class.java.simpleName
     }
 }
