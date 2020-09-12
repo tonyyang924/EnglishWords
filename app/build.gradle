@@ -125,8 +125,8 @@ dependencies {
 
     // Kotlin components
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlin_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines_version"
 
     // Material design
     implementation "com.google.android.material:material:$rootProject.material_version"
@@ -146,6 +146,11 @@ dependencies {
     implementation "com.crashlytics.sdk.android:crashlytics:$rootProject.crashlytics_version"
     implementation "org.greenrobot:eventbus:$rootProject.eventbus_version"
     implementation "com.facebook.stetho:stetho:$rootProject.stetho_version"
+
+    // ktx
+    implementation "androidx.core:core-ktx:${rootProject.ext.ktx_core_version}"
+    implementation "androidx.fragment:fragment-ktx:${rootProject.ext.ktx_fragment_version}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.ktx_viewmodel_version}"
 }
 
 repositories {
