@@ -10,9 +10,6 @@ import tw.tonyyang.englishwords.App
 import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.database.Word
 import java.io.ByteArrayOutputStream
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -50,19 +47,8 @@ class FileChooserUtils private constructor() {
                     data = arrayOutputStream.toByteArray()
                 }
             }
-            var fileOutputStream: FileOutputStream? = null
-            try {
-                fileOutputStream = activity?.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE)
-            } catch (e: FileNotFoundException) {
-                e.printStackTrace()
-            }
-            if (fileOutputStream != null) {
-                try {
-                    fileOutputStream.write(data)
-                    fileOutputStream.close()
-                } catch (e: IOException) {
-                    e.printStackTrace()
-                }
+            activity?.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE)?.use {
+                it.write(data)
             }
             activity?.openFileInput(TMP_FILE_NAME).use {
                 val book = Workbook.getWorkbook(it)
