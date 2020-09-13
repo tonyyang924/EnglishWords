@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import jxl.Workbook
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.App
 import tw.tonyyang.englishwords.Logger
@@ -20,62 +21,51 @@ class FileChooserUtils private constructor() {
         private const val TMP_FILE_NAME = "vocabulary.xls"
 
         @Throws(Exception::class)
-        suspend fun importExcelDataToDb(activity: Activity?, fileUrl: String?) = withContext(Dispatchers.IO) {
+        suspend fun importExcelDataToDb(activity: Activity?, fileUrl: String?) = coroutineScope {
             Logger.d(TAG, "[importExcelDataToDb] start")
-
-            var data = ByteArray(0)
-            if (fileUrl?.contains("content://") == true || fileUrl?.contains("file:///") == true) {
-                data = readFile(activity, fileUrl)
+            if (fileUrl == null) {
+                Logger.d(TAG, "fileUrl is null.")
+                return@coroutineScope
+            }
+            if (activity == null) {
+                Logger.d(TAG, "activity is null.")
+                return@coroutineScope
+            }
+            val data = if (fileUrl.contains("content://") || fileUrl.contains("file:///")) {
+                readFile(activity, fileUrl)
             } else {
-                val url = URL(fileUrl)
-                val arrayOutputStream = ByteArrayOutputStream()
-                val connection = url.openConnection() as? HttpURLConnection
-                connection?.connectTimeout = 10 * 1000
-                connection?.connect()
-                if (connection?.responseCode == 200) {
-                    val inputStream = connection.inputStream
-                    val buffer = ByteArray(10 * 1024)
-                    while (true) {
-                        val len = inputStream.read(buffer)
-                        if (len == -1) {
-                            break
-                        }
-                        arrayOutputStream.write(buffer, 0, len)
+                readFileFromInternet(fileUrl)
+            }
+            withContext(Dispatchers.IO) {
+                storeDataToTempFile(activity, data)
+                getWorkbookFromTempFile(activity)?.let { book ->
+                    if (book.sheets.isEmpty()) {
+                        return@let
                     }
-                    arrayOutputStream.close()
-                    inputStream.close()
-                    data = arrayOutputStream.toByteArray()
+                    val sheet = book.getSheet(0)
+                    val rows = sheet.rows
+                    for (i in 0 until rows) {
+                        if (sheet.getCell(0, i).contents[0].toString() == "#") continue
+                        val word = Word(
+                                word = sheet.getCell(0, i).contents,
+                                wordMean = sheet.getCell(1, i).contents,
+                                category = sheet.getCell(2, i).contents,
+                                wordStar = sheet.getCell(3, i).contents,
+                                wordSentence = sheet.getCell(4, i).contents
+                        )
+                        App.db?.userDao()?.insertAll(word)
+                    }
+                    book.close()
                 }
             }
-            activity?.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE)?.use {
-                it.write(data)
-            }
-            activity?.openFileInput(TMP_FILE_NAME).use {
-                val book = Workbook.getWorkbook(it)
-                book.numberOfSheets
-                val sheet = book.getSheet(0)
-                val rows = sheet.rows
-                for (i in 0 until rows) {
-                    if (sheet.getCell(0, i).contents[0].toString() == "#") continue
-                    val word = Word(
-                            word = sheet.getCell(0, i).contents,
-                            wordMean = sheet.getCell(1, i).contents,
-                            category = sheet.getCell(2, i).contents,
-                            wordStar = sheet.getCell(3, i).contents,
-                            wordSentence = sheet.getCell(4, i).contents
-                    )
-                    App.db?.userDao()?.insertAll(word)
-                }
-                book.close()
-            }
-
             Logger.d(TAG, "[importExcelDataToDb] end")
         }
 
-        private fun readFile(activity: Activity?, filePath: String?): ByteArray {
+        private suspend fun readFile(activity: Activity, filePath: String): ByteArray = withContext(Dispatchers.IO) {
+            Logger.d(TAG, "[readFile] start")
             val arrayOutputStream = ByteArrayOutputStream()
             val uri = Uri.parse(filePath)
-            activity?.contentResolver?.openInputStream(uri)?.use {
+            activity.contentResolver.openInputStream(uri)?.use {
                 val buffer = ByteArray(10 * 1024)
                 while (true) {
                     val len = it.read(buffer)
@@ -86,7 +76,44 @@ class FileChooserUtils private constructor() {
                 }
                 arrayOutputStream.close()
             }
-            return arrayOutputStream.toByteArray()
+            Logger.d(TAG, "[readFile] end")
+            arrayOutputStream.toByteArray()
+        }
+
+        private suspend fun readFileFromInternet(fileUrl: String): ByteArray = withContext(Dispatchers.IO) {
+            Logger.d(TAG, "[readFileFromInternet] start")
+            val url = URL(fileUrl)
+            val arrayOutputStream = ByteArrayOutputStream()
+            val connection = url.openConnection() as? HttpURLConnection
+            connection?.connectTimeout = 10 * 1000
+            connection?.connect()
+            if (connection?.responseCode == 200) {
+                val inputStream = connection.inputStream
+                val buffer = ByteArray(10 * 1024)
+                while (true) {
+                    val len = inputStream.read(buffer)
+                    if (len == -1) {
+                        break
+                    }
+                    arrayOutputStream.write(buffer, 0, len)
+                }
+                arrayOutputStream.close()
+                inputStream.close()
+            }
+            Logger.d(TAG, "[readFileFromInternet] end")
+            arrayOutputStream.toByteArray()
+        }
+
+        private fun storeDataToTempFile(activity: Activity, data: ByteArray) {
+            activity.openFileOutput(TMP_FILE_NAME, Context.MODE_PRIVATE)?.use {
+                it.write(data)
+            }
+        }
+
+        private fun getWorkbookFromTempFile(activity: Activity): Workbook? {
+            activity.openFileInput(TMP_FILE_NAME).use {
+                return Workbook.getWorkbook(it)
+            }
         }
     }
 }
