@@ -42,6 +42,10 @@ class FileChooserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
+            if (fileUrl.isNullOrBlank()) {
+                Logger.d(TAG, "fileUrl is null.")
+                return@setOnClickListener
+            }
             lifecycleScope.launch {
                 progress?.show()
                 db?.userDao()?.deleteAll()
