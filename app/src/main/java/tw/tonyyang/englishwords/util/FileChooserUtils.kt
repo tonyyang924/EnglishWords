@@ -20,7 +20,6 @@ class FileChooserUtils private constructor() {
         private val TAG = FileChooserUtils::class.java.simpleName
         private const val TMP_FILE_NAME = "vocabulary.xls"
 
-        @Throws(Exception::class)
         suspend fun importExcelDataToDb(activity: Activity?, fileUrl: String?) = coroutineScope {
             Logger.d(TAG, "[importExcelDataToDb] start")
             if (fileUrl == null) {
@@ -31,12 +30,12 @@ class FileChooserUtils private constructor() {
                 Logger.d(TAG, "activity is null.")
                 return@coroutineScope
             }
-            val data = if (fileUrl.contains("content://") || fileUrl.contains("file:///")) {
-                readFile(activity, fileUrl)
-            } else {
-                readFileFromInternet(fileUrl)
-            }
             withContext(Dispatchers.IO) {
+                val data = if (fileUrl.contains("content://") || fileUrl.contains("file:///")) {
+                    readFile(activity, fileUrl)
+                } else {
+                    readFileFromInternet(fileUrl)
+                }
                 storeDataToTempFile(activity, data)
                 getWorkbookFromTempFile(activity)?.let { book ->
                     if (book.sheets.isEmpty()) {
@@ -61,7 +60,7 @@ class FileChooserUtils private constructor() {
             Logger.d(TAG, "[importExcelDataToDb] end")
         }
 
-        private suspend fun readFile(activity: Activity, filePath: String): ByteArray = withContext(Dispatchers.IO) {
+        private fun readFile(activity: Activity, filePath: String): ByteArray {
             Logger.d(TAG, "[readFile] start")
             val arrayOutputStream = ByteArrayOutputStream()
             val uri = Uri.parse(filePath)
@@ -77,10 +76,10 @@ class FileChooserUtils private constructor() {
                 arrayOutputStream.close()
             }
             Logger.d(TAG, "[readFile] end")
-            arrayOutputStream.toByteArray()
+            return arrayOutputStream.toByteArray()
         }
 
-        private suspend fun readFileFromInternet(fileUrl: String): ByteArray = withContext(Dispatchers.IO) {
+        private fun readFileFromInternet(fileUrl: String): ByteArray {
             Logger.d(TAG, "[readFileFromInternet] start")
             val url = URL(fileUrl)
             val arrayOutputStream = ByteArrayOutputStream()
@@ -101,7 +100,7 @@ class FileChooserUtils private constructor() {
                 inputStream.close()
             }
             Logger.d(TAG, "[readFileFromInternet] end")
-            arrayOutputStream.toByteArray()
+            return arrayOutputStream.toByteArray()
         }
 
         private fun storeDataToTempFile(activity: Activity, data: ByteArray) {
