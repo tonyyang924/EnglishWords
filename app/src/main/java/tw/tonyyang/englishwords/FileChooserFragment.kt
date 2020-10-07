@@ -23,6 +23,7 @@ import tw.tonyyang.englishwords.util.FileChooserUtils
 import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.util.UiUtils
+import kotlin.system.measureTimeMillis
 
 class FileChooserFragment : Fragment() {
 
@@ -42,15 +43,22 @@ class FileChooserFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnSubmit.setOnClickListener {
+            if (fileUrl.isNullOrBlank()) {
+                Logger.d(TAG, "fileUrl is null.")
+                return@setOnClickListener
+            }
             lifecycleScope.launch {
                 progress?.show()
-                db?.userDao()?.deleteAll()
-                FileChooserUtils.importExcelDataToDb(activity, fileUrl)
-                Toast.makeText(context, activity?.getString(R.string.loading_complete), Toast.LENGTH_LONG).show()
-                val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
-                    message = "更新列表資料"
+                val spendTime = measureTimeMillis {
+                    db?.userDao()?.deleteAll()
+                    FileChooserUtils.importExcelDataToDb(activity, fileUrl)
+                    Toast.makeText(context, activity?.getString(R.string.loading_complete), Toast.LENGTH_LONG).show()
+                    val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
+                        message = "更新列表資料"
+                    }
+                    EventBus.getDefault().post(realTimeUpdateEvent)
                 }
-                EventBus.getDefault().post(realTimeUpdateEvent)
+                Logger.d(TAG, "spendTime: $spendTime ms")
                 progress?.dismiss()
             }
         }

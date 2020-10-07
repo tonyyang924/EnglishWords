@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import tw.tonyyang.englishwords.App.Companion.db
 import tw.tonyyang.englishwords.database.Word
@@ -41,7 +42,17 @@ class ExamFragment : Fragment() {
             }
             binding.tvResult.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
         }
-        updateUI(getRandomWordList())
+        refreshExam()
+    }
+
+    private fun refreshExam() {
+        lifecycleScope.launch {
+            withContext(Dispatchers.IO) {
+                db?.userDao()?.getRandomWords(4)
+            }?.let {
+                updateUI(it)
+            }
+        }
     }
 
     private fun updateUI(list: List<Word>) {
@@ -70,12 +81,6 @@ class ExamFragment : Fragment() {
         }
     }
 
-    private fun getRandomWordList(): List<Word> = runBlocking {
-        withContext(Dispatchers.Default) {
-            db?.userDao()?.getRandomWords(4)
-        } ?: mutableListOf()
-    }
-
     private fun getWordCount(): Int = runBlocking {
         withContext(Dispatchers.Default) {
             db?.userDao()?.count
@@ -92,7 +97,7 @@ class ExamFragment : Fragment() {
             activity?.onBackPressed()
             return true
         } else if (item.itemId == R.id.action_random) {
-            updateUI(getRandomWordList())
+            refreshExam()
             return true
         }
         return super.onOptionsItemSelected(item)
