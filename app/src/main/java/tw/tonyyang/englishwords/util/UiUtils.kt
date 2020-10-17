@@ -47,7 +47,7 @@ class UiUtils {
             ll.addView(tvText)
 
             val builder = context?.let { AlertDialog.Builder(it) }?.apply {
-                setCancelable(true)
+                setCancelable(false)
                 setView(ll)
             }
 
