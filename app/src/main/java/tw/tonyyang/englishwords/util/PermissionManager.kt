@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
-import tw.tonyyang.englishwords.FileChooserFragment
+import androidx.fragment.app.Fragment
 import tw.tonyyang.englishwords.RequestCodeStore
 import tw.tonyyang.englishwords.preference.GlobalPreference
 
@@ -22,7 +22,7 @@ object PermissionManager {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    fun verifyStoragePermissions(activity: Activity, fragment: FileChooserFragment, permissionCallback: PermissionCallback) {
+    fun verifyStoragePermissions(activity: Activity, fragment: Fragment, permissionCallback: PermissionCallback) {
         val permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
         if (permission != PackageManager.PERMISSION_GRANTED) {
             if (needShowGuide(activity)) {

@@ -1,7 +1,6 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui.importer
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,59 +13,48 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.*
+import androidx.fragment.app.viewModels
 import org.greenrobot.eventbus.EventBus
-import tw.tonyyang.englishwords.App.Companion.db
+import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.R
+import tw.tonyyang.englishwords.RealTimeUpdateEvent
+import tw.tonyyang.englishwords.RequestCodeStore
+import tw.tonyyang.englishwords.data.ImporterResult
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
-import tw.tonyyang.englishwords.util.FileChooserUtils
 import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.util.UiUtils
-import kotlin.system.measureTimeMillis
+import tw.tonyyang.englishwords.viewmodel.ImporterViewModel
 
-class FileChooserFragment : Fragment() {
+class ImporterFragment : Fragment() {
 
     private lateinit var binding: FragmentDropboxchooserBinding
 
+    private val viewModel: ImporterViewModel by viewModels()
+
     private var fileUrl: String? = null
 
-    private val progress: AlertDialog? by lazy {
-        UiUtils.getProgressDialog(activity as? Context, activity?.getString(R.string.loading_message))
-    }
+    private var progress: AlertDialog? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDropboxchooserBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnSubmit.setOnClickListener {
-            if (fileUrl.isNullOrBlank()) {
-                Logger.d(TAG, "fileUrl is null.")
-                return@setOnClickListener
-            }
-            lifecycleScope.launch {
-                progress?.show()
-                val spendTime = measureTimeMillis {
-                    db?.userDao()?.deleteAll()
-                    FileChooserUtils.importExcelDataToDb(activity, fileUrl)
-                    Toast.makeText(context, activity?.getString(R.string.loading_complete), Toast.LENGTH_LONG).show()
-                    val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
-                        message = "更新列表資料"
-                    }
-                    EventBus.getDefault().post(realTimeUpdateEvent)
-                }
-                Logger.d(TAG, "spendTime: $spendTime ms")
-                progress?.dismiss()
-            }
+        initViews()
+        initObservers()
+    }
+
+    private fun initViews() {
+        activity?.let {
+            progress = UiUtils.getProgressDialog(it, it.getString(R.string.loading_message))
         }
-        binding.btnSubmit.isEnabled = false
         binding.btnChooser.setOnClickListener {
             if (Build.VERSION.SDK_INT >= 23) {
-                activity?.let { it1 ->
-                    PermissionManager.verifyStoragePermissions(it1, this@FileChooserFragment, object : PermissionCallback {
+                activity?.let {
+                    PermissionManager.verifyStoragePermissions(it, this@ImporterFragment, object : PermissionCallback {
                         override fun onPermissionGranted() {
                             chooseFileFromLocal()
                         }
@@ -84,6 +72,35 @@ class FileChooserFragment : Fragment() {
                 chooseFileFromLocal()
             }
         }
+        binding.btnSubmit.setOnClickListener {
+            viewModel.importWords(fileUrl)
+        }
+        binding.btnSubmit.isEnabled = false
+    }
+
+    private fun initObservers() {
+        viewModel.isLoading.observe(viewLifecycleOwner, {
+            progress?.run {
+                if (it) {
+                    show()
+                } else {
+                    hide()
+                }
+            }
+        })
+        viewModel.showResult.observe(viewLifecycleOwner, {
+            when (it) {
+                is ImporterResult.Success -> {
+                    Toast.makeText(activity, it.data, Toast.LENGTH_LONG).show()
+                    val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
+                        this.message = "update word list"
+                    }
+                    EventBus.getDefault().post(realTimeUpdateEvent)
+                }
+                is ImporterResult.Failure -> Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
+                is ImporterResult.Error -> Toast.makeText(activity, it.e.localizedMessage, Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun chooseFileFromLocal() {
@@ -125,6 +142,6 @@ class FileChooserFragment : Fragment() {
     }
 
     companion object {
-        private val TAG = FileChooserFragment::class.java.simpleName
+        private val TAG = ImporterFragment::class.java.simpleName
     }
 }

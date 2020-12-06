@@ -3,8 +3,10 @@
     <string name="action_settings">設定</string>
     <string name="common_ok">確定</string>
     <string name="loading_message">讀取中…</string>
-    <string name="loading_and_import">"讀取檔案並匯入資料庫中…"</string>
-    <string name="loading_complete">處理完成</string>
+    <string name="import_excel_complete">導入單字成功</string>
+    <string name="import_excel_failed">導入單字失敗</string>
+    <string name="import_excel_failed_empty">導入單字失敗，因為Excel sheets為空</string>
+    <string name="import_excel_failed_word_list_empty">導入單字失敗，因為沒有單字</string>
     <string name="dialog_action_ok">確定</string>
     <string name="dialog_action_cancel">取消</string>
     <string name="dialog_error_title">抱歉</string>
