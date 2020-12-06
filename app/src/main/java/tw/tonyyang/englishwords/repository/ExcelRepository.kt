@@ -3,6 +3,8 @@ package tw.tonyyang.englishwords.repository
 import jxl.Sheet
 import jxl.Workbook
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.App
 import tw.tonyyang.englishwords.R
@@ -16,17 +18,17 @@ class ExcelRepository(
         private val localDataSource: ExcelLocalDataSource = ExcelLocalDataSource(),
         private val remoteDataSource: ExcelRemoteDataSource = ExcelRemoteDataSource()
 ) {
-    suspend fun getWordList(fileUrl: String?): List<Word> = withContext(Dispatchers.IO) {
+    suspend fun getWordList(fileUrl: String?): Flow<List<Word>> = flow {
         if (fileUrl.isNullOrBlank()) {
             throw IllegalArgumentException(App.appContext.getString(R.string.import_excel_failed))
         }
-        return@withContext mutableListOf<Word>().apply {
+        emit(mutableListOf<Word>().apply {
             val workbook = getWorkbook(fileUrl)
             workbook.sheets.forEach { sheet ->
                 addAll(sheet.parseToWordList())
             }
             workbook.close()
-        }
+        })
     }
 
     private fun getWorkbook(fileUrl: String): Workbook =
