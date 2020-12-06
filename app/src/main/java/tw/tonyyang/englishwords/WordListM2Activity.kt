@@ -44,7 +44,7 @@ class WordListM2Activity : BaseActivity() {
 
     private fun updateWordList() = lifecycleScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
-            db?.userDao()?.getCategoryWords(category) ?: listOf()
+            db.userDao().getCategoryWords(category)
         }.let {
             wordListM2Adapter.wordList = it
         }

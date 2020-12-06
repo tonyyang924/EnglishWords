@@ -23,7 +23,7 @@ class WordListM1Fragment : Fragment() {
 
     private lateinit var binding: FragmentWordListBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentWordListBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -41,7 +41,7 @@ class WordListM1Fragment : Fragment() {
 
     private fun updateCategoryList() = lifecycleScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
-            db?.userDao()?.allCategory ?: listOf()
+            db.userDao().allCategory
         }.let {
             wordListM1Adapter.categoryList = it
         }

@@ -16,9 +16,7 @@ class App : Application() {
     }
 
     companion object {
-        var db: AppDatabase? = null
-            private set
-
+        lateinit var db: AppDatabase
         lateinit var appContext: Context
     }
 }
