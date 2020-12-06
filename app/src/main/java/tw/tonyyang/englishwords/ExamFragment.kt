@@ -26,7 +26,7 @@ class ExamFragment : Fragment() {
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentExamBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,8 +48,8 @@ class ExamFragment : Fragment() {
     private fun refreshExam() {
         lifecycleScope.launch {
             withContext(Dispatchers.IO) {
-                db?.userDao()?.getRandomWords(4)
-            }?.let {
+                db.userDao().getRandomWords(4)
+            }.let {
                 updateUI(it)
             }
         }
@@ -83,8 +83,8 @@ class ExamFragment : Fragment() {
 
     private fun getWordCount(): Int = runBlocking {
         withContext(Dispatchers.Default) {
-            db?.userDao()?.count
-        } ?: 0
+            db.userDao().count
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

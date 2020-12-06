@@ -36,9 +36,13 @@ class ImporterViewModel(
                             if (wordList.isEmpty()) {
                                 _showResult.value = ImporterResult.Failure(App.appContext.getString(R.string.import_excel_failed_word_list_empty))
                             }
-                            App.db?.userDao()?.deleteAll()
-                            App.db?.userDao()?.insertAll(wordList)
-                            _showResult.value = ImporterResult.Success(App.appContext.getString(R.string.import_excel_complete))
+                            App.db.userDao().deleteAll()
+                            val roomInsertedCount = App.db.userDao().insertAll(wordList).size
+                            _showResult.value = if (roomInsertedCount > 0) {
+                                ImporterResult.Success(App.appContext.getString(R.string.import_excel_complete, roomInsertedCount))
+                            } else {
+                                ImporterResult.Failure(App.appContext.getString(R.string.import_excel_insert_failed))
+                            }
                         }
             }
             Logger.d(TAG, "spendTime: $spendTime ms")
