@@ -19,10 +19,10 @@ import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.RequestCodeStore
-import tw.tonyyang.englishwords.data.ImporterResult
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
+import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.UiUtils
 import tw.tonyyang.englishwords.viewmodel.ImporterViewModel
 
@@ -79,26 +79,21 @@ class ImporterFragment : Fragment() {
     }
 
     private fun initObservers() {
-        viewModel.isLoading.observe(viewLifecycleOwner, {
-            progress?.run {
-                if (it) {
-                    show()
-                } else {
-                    hide()
-                }
-            }
-        })
         viewModel.showResult.observe(viewLifecycleOwner, {
             when (it) {
-                is ImporterResult.Success -> {
+                is Result.InProgress -> progress?.show()
+                is Result.Success -> {
+                    progress?.hide()
                     Toast.makeText(activity, it.data, Toast.LENGTH_LONG).show()
                     val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
                         this.message = "update word list"
                     }
                     EventBus.getDefault().post(realTimeUpdateEvent)
                 }
-                is ImporterResult.Failure -> Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
-                is ImporterResult.Error -> Toast.makeText(activity, it.e.localizedMessage, Toast.LENGTH_LONG).show()
+                is Result.Error -> {
+                    progress?.hide()
+                    Toast.makeText(activity, it.exception.message, Toast.LENGTH_LONG).show()
+                }
             }
         })
     }
