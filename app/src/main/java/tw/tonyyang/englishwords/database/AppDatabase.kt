@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import tw.tonyyang.englishwords.database.dao.WordDao
+import tw.tonyyang.englishwords.database.entity.Word
 
 @Database(entities = [Word::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {

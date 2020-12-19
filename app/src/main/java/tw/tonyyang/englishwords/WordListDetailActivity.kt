@@ -3,7 +3,7 @@ package tw.tonyyang.englishwords
 import android.view.MenuItem
 import android.widget.TextView
 import com.hedgehog.ratingbar.RatingBar
-import tw.tonyyang.englishwords.database.Word
+import tw.tonyyang.englishwords.database.entity.Word
 
 class WordListDetailActivity : BaseActivity() {
     private var selectedWords: Word? = null

@@ -24,9 +24,8 @@ import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.UiUtils
-import tw.tonyyang.englishwords.viewmodel.ImporterViewModel
 
-class ImporterFragment : Fragment() {
+class ImporterFragment private constructor() : Fragment() {
 
     private lateinit var binding: FragmentDropboxchooserBinding
 
@@ -138,5 +137,7 @@ class ImporterFragment : Fragment() {
 
     companion object {
         private val TAG = ImporterFragment::class.java.simpleName
+
+        fun newInstance() = ImporterFragment()
     }
 }

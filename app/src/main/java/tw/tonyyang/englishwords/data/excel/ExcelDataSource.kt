@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.data
+package tw.tonyyang.englishwords.data.excel
 
 import jxl.Workbook
 

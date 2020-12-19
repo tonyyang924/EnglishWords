@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.database
+package tw.tonyyang.englishwords.database.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,8 +1,8 @@
-package tw.tonyyang.englishwords.data.local
+package tw.tonyyang.englishwords.data.excel.local
 
 import android.net.Uri
 import tw.tonyyang.englishwords.App
-import tw.tonyyang.englishwords.data.AbstractExcelDataSource
+import tw.tonyyang.englishwords.data.excel.AbstractExcelDataSource
 import java.io.IOException
 
 class ExcelLocalDataSource : AbstractExcelDataSource() {
