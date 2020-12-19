@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import tw.tonyyang.englishwords.database.Word
+import tw.tonyyang.englishwords.database.entity.Word
 
 class WordListM2Adapter: RecyclerView.Adapter<WordListM2Adapter.ViewHolder>() {
     interface OnRecyclerViewListener {

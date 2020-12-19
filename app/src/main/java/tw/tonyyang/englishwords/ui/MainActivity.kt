@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -6,6 +6,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
+import tw.tonyyang.englishwords.BaseActivity
+import tw.tonyyang.englishwords.ExamFragment
+import tw.tonyyang.englishwords.R
+import tw.tonyyang.englishwords.WordListM1Fragment
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment
 
 class MainActivity : BaseActivity() {
@@ -45,7 +49,7 @@ class MainActivity : BaseActivity() {
 
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> ImporterFragment()
+                0 -> ImporterFragment.newInstance()
                 1 -> WordListM1Fragment()
                 2 -> ExamFragment()
                 else -> throw RuntimeException("Could not get fragment.")

@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.viewmodel
+package tw.tonyyang.englishwords.ui.importer
 
 import androidx.lifecycle.*
 import kotlinx.coroutines.Dispatchers

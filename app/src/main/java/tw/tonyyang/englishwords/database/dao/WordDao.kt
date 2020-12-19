@@ -1,9 +1,10 @@
-package tw.tonyyang.englishwords.database
+package tw.tonyyang.englishwords.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import tw.tonyyang.englishwords.database.entity.Word
 
 @Dao
 interface WordDao {

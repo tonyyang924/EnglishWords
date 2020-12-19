@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import tw.tonyyang.englishwords.App.Companion.db
-import tw.tonyyang.englishwords.database.Word
+import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.databinding.FragmentExamBinding
 import java.util.*
 

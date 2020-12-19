@@ -1,8 +1,8 @@
-package tw.tonyyang.englishwords.data.remote
+package tw.tonyyang.englishwords.data.excel.remote
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import tw.tonyyang.englishwords.data.AbstractExcelDataSource
+import tw.tonyyang.englishwords.data.excel.AbstractExcelDataSource
 import java.io.IOException
 
 class ExcelRemoteDataSource : AbstractExcelDataSource() {
