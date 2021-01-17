@@ -142,4 +142,11 @@ dependencies {
     implementation "androidx.core:core-ktx:${rootProject.ext.ktx_core_version}"
     implementation "androidx.fragment:fragment-ktx:${rootProject.ext.ktx_fragment_version}"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.ktx_viewmodel_version}"
+
+    // koin
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-androidx-scope:$koin_version"
+    implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "org.koin:koin-androidx-fragment:$koin_version"
 }
