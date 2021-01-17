@@ -15,7 +15,7 @@ import java.lang.IllegalStateException
 import kotlin.system.measureTimeMillis
 
 class ImporterViewModel(
-        private val excelRepository: ExcelRepository = ExcelRepository()
+        private val excelRepository: ExcelRepository
 ) : ViewModel() {
     private val _showResult = MutableLiveData<Result<String>>()
     val showResult: LiveData<Result<String>>
