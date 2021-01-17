@@ -13,15 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import org.greenrobot.eventbus.EventBus
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.RequestCodeStore
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.util.PermissionManager
-import tw.tonyyang.englishwords.util.PermissionManager.PermissionCallback
 import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.UiUtils
 
@@ -29,7 +28,7 @@ class ImporterFragment private constructor() : Fragment() {
 
     private lateinit var binding: FragmentDropboxchooserBinding
 
-    private val viewModel: ImporterViewModel by viewModels()
+    private val viewModel: ImporterViewModel by viewModel()
 
     private var fileUrl: String? = null
 
@@ -53,7 +52,7 @@ class ImporterFragment private constructor() : Fragment() {
         binding.btnChooser.setOnClickListener {
             if (Build.VERSION.SDK_INT >= 23) {
                 activity?.let {
-                    PermissionManager.verifyStoragePermissions(it, this@ImporterFragment, object : PermissionCallback {
+                    PermissionManager.verifyStoragePermissions(it, this@ImporterFragment, object : PermissionManager.PermissionCallback {
                         override fun onPermissionGranted() {
                             chooseFileFromLocal()
                         }
