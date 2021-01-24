@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import tw.tonyyang.englishwords.BaseActivity
-import tw.tonyyang.englishwords.ExamFragment
+import tw.tonyyang.englishwords.ui.exam.ExamFragment
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.WordListM1Fragment
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment

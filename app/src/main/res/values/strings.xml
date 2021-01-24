@@ -8,6 +8,7 @@
     <string name="import_excel_failed_empty">匯入單字失敗，因為Excel sheets為空</string>
     <string name="import_excel_failed_word_list_empty">匯入單字失敗，因為沒有單字</string>
     <string name="import_excel_insert_failed">單字集匯入資料庫失敗</string>
+    <string name="failure_cannot_find_words">發生錯誤，找不到單字！</string>
     <string name="dialog_action_ok">確定</string>
     <string name="dialog_action_cancel">取消</string>
     <string name="dialog_error_title">抱歉</string>

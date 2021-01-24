@@ -1,17 +1,21 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui.exam
 
 import android.os.Bundle
 import android.view.*
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.*
-import tw.tonyyang.englishwords.App.Companion.db
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.databinding.FragmentExamBinding
+import tw.tonyyang.englishwords.state.Result
 import java.util.*
 
 class ExamFragment : Fragment() {
+
+    private val examViewModel: ExamViewModel by viewModel()
 
     private var trueWord: String? = null
 
@@ -42,21 +46,24 @@ class ExamFragment : Fragment() {
             }
             binding.tvResult.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
         }
-        refreshExam()
-    }
-
-    private fun refreshExam() {
-        lifecycleScope.launch {
-            withContext(Dispatchers.IO) {
-                db.userDao().getRandomWords(4)
-            }.let {
-                updateUI(it)
+        examViewModel.randomWordList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Result.InProgress -> {
+                    Logger.d(TAG, "Result.InProgress")
+                }
+                is Result.Success -> {
+                    updateUI(it.data)
+                }
+                is Result.Error -> {
+                    Toast.makeText(activity, it.exception.message, Toast.LENGTH_LONG).show()
+                }
             }
         }
+        examViewModel.requestRandomWords()
     }
 
     private fun updateUI(list: List<Word>) {
-        if (getWordCount() == 0 || list.isEmpty()) {
+        if (list.isEmpty()) {
             binding.tvStatus.visibility = View.VISIBLE
             binding.tvChineseMean.text = ""
             for (i in 0 until binding.rgAns.childCount) {
@@ -81,12 +88,6 @@ class ExamFragment : Fragment() {
         }
     }
 
-    private fun getWordCount(): Int = runBlocking {
-        withContext(Dispatchers.Default) {
-            db.userDao().count
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.exam, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -97,9 +98,13 @@ class ExamFragment : Fragment() {
             activity?.onBackPressed()
             return true
         } else if (item.itemId == R.id.action_random) {
-            refreshExam()
+            examViewModel.requestRandomWords()
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    companion object {
+        private val TAG = ExamFragment::class.java.simpleName
     }
 }
