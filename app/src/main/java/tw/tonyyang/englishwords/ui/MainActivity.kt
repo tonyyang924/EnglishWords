@@ -36,7 +36,7 @@ class MainActivity : BaseActivity() {
         tabs.setupWithViewPager(viewpager)
     }
 
-    private class SamplePagerAdapter internal constructor(
+    private class SamplePagerAdapter(
             fm: FragmentManager,
             private val numOfTabs: Int
     ) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
@@ -47,17 +47,20 @@ class MainActivity : BaseActivity() {
             return if (position < tabsTitle.size) tabsTitle[position] else null
         }
 
-        override fun getItem(position: Int): Fragment {
-            return when (position) {
-                0 -> ImporterFragment.newInstance()
-                1 -> WordListM1Fragment()
-                2 -> ExamFragment()
-                else -> throw RuntimeException("Could not get fragment.")
-            }
+        override fun getItem(position: Int): Fragment = when (position) {
+            TAB_IMPORTER -> ImporterFragment.newInstance()
+            TAB_WORD_LIST_M1 -> WordListM1Fragment()
+            TAB_EXAM -> ExamFragment()
+            else -> throw RuntimeException("Could not get fragment.")
+
         }
 
-        override fun getCount(): Int {
-            return numOfTabs
-        }
+        override fun getCount(): Int = numOfTabs
+    }
+
+    companion object {
+        private const val TAB_IMPORTER = 0
+        private const val TAB_WORD_LIST_M1 = 1
+        private const val TAB_EXAM = 2
     }
 }
