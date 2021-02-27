@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">單字即時通</string>
+    <string name="tab_label_importer">讀取 / 更新</string>
+    <string name="tab_label_vocabularies">單字列表</string>
+    <string name="tab_label_exam">單字考試</string>
     <string name="action_settings">設定</string>
     <string name="common_ok">確定</string>
     <string name="loading_message">讀取中…</string>
