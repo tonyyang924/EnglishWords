@@ -23,6 +23,7 @@ buildscript {
         ktx_fragment_version = '1.2.5'
         ktx_viewmodel_version = '2.2.0'
         koin_version = "2.2.2"
+        viewpager2_version = "1.0.0"
     }
     repositories {
         google()

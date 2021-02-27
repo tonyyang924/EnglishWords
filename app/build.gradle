@@ -111,19 +111,20 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$rootProject.kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutines_version"
+
+    // Android components
     implementation "androidx.appcompat:appcompat:$rootProject.appcompat_version"
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constrantlayout_version"
     implementation "androidx.legacy:legacy-support-v13:$rootProject.legacy_support_v13_version"
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constrantlayout_version"
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerview_version"
+    implementation "androidx.viewpager2:viewpager2:$rootProject.viewpager2_version"
+    implementation "com.google.android.material:material:$rootProject.material_version"
 
     // Room components
     implementation "androidx.room:room-runtime:$rootProject.room_version"
     kapt "androidx.room:room-compiler:$rootProject.room_version"
     implementation "androidx.room:room-ktx:$rootProject.room_version"
     androidTestImplementation "androidx.room:room-testing:$rootProject.room_version"
-
-    // Material design
-    implementation "com.google.android.material:material:$rootProject.material_version"
 
     // Testing
     testImplementation "junit:junit:$rootProject.junit_version"

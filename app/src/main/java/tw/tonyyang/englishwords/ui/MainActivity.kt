@@ -2,10 +2,11 @@ package tw.tonyyang.englishwords.ui
 
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import tw.tonyyang.englishwords.BaseActivity
 import tw.tonyyang.englishwords.ui.exam.ExamFragment
 import tw.tonyyang.englishwords.R
@@ -24,38 +25,32 @@ class MainActivity : BaseActivity() {
         get() = R.layout.activity_main
 
     override fun onViewCreated() {
-        val tabs = findViewById<TabLayout>(R.id.tabs).apply {
-            removeAllTabs()
-            addTab(newTab())
-            addTab(newTab())
-            addTab(newTab())
-        }
-        val viewpager = findViewById<ViewPager>(R.id.viewpager).apply {
-            adapter = SamplePagerAdapter(supportFragmentManager, tabs.tabCount)
-        }
-        tabs.setupWithViewPager(viewpager)
+        val tabLayoutLabels = listOf(
+                getString(R.string.tab_label_importer),
+                getString(R.string.tab_label_vocabularies),
+                getString(R.string.tab_label_exam)
+        )
+        val tabLayout: TabLayout = findViewById(R.id.tabs)
+        val viewpager: ViewPager2 = findViewById(R.id.viewpager)
+        viewpager.adapter = LabelPagerAdapter(this, tabLayoutLabels.size)
+        TabLayoutMediator(tabLayout, viewpager) { tab, position ->
+            tab.text = tabLayoutLabels.getOrNull(position)
+        }.attach()
     }
 
-    private class SamplePagerAdapter(
-            fm: FragmentManager,
+    private class LabelPagerAdapter(
+            fragmentActivity: FragmentActivity,
             private val numOfTabs: Int
-    ) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    ) : FragmentStateAdapter(fragmentActivity) {
 
-        private val tabsTitle = listOf("讀取 / 更新", "單字列表", "單字考試")
+        override fun getItemCount(): Int = numOfTabs
 
-        override fun getPageTitle(position: Int): CharSequence? {
-            return if (position < tabsTitle.size) tabsTitle[position] else null
-        }
-
-        override fun getItem(position: Int): Fragment = when (position) {
+        override fun createFragment(position: Int): Fragment = when (position) {
             TAB_IMPORTER -> ImporterFragment.newInstance()
             TAB_WORD_LIST_M1 -> WordListM1Fragment()
             TAB_EXAM -> ExamFragment()
             else -> throw RuntimeException("Could not get fragment.")
-
         }
-
-        override fun getCount(): Int = numOfTabs
     }
 
     companion object {
