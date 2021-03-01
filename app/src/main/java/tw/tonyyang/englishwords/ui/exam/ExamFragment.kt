@@ -23,6 +23,10 @@ class ExamFragment : Fragment() {
         listOf(binding.rbAns1, binding.rbAns2, binding.rbAns3, binding.rbAns4)
     }
 
+    private var menuVisible = false
+
+    private var randomItem: MenuItem? = null
+
     private lateinit var binding: FragmentExamBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -84,16 +88,24 @@ class ExamFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        randomItem?.isVisible = menuVisible
+    }
+
+    override fun setMenuVisibility(menuVisible: Boolean) {
+        super.setMenuVisibility(menuVisible)
+        this.menuVisible = menuVisible
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.exam, menu)
+        randomItem = menu.findItem(R.id.action_random)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            activity?.onBackPressed()
-            return true
-        } else if (item.itemId == R.id.action_random) {
+        if (item.itemId == R.id.action_random) {
             examViewModel.requestRandomWords()
             return true
         }
