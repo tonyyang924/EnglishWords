@@ -4,26 +4,32 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.App.Companion.db
+import tw.tonyyang.englishwords.databinding.ActivityWordListBinding
 
-class WordListM2Activity : BaseActivity() {
+class WordListM2Activity : AppCompatActivity() {
+
+    private val binding by viewBinding(ActivityWordListBinding::inflate)
+
     private val category: String by lazy {
         intent.extras?.getString(EXTRA_CATEGORY) as String
     }
+
     private val wordListM2Adapter: WordListM2Adapter by lazy {
         WordListM2Adapter()
     }
 
-    override val layoutResource: Int
-        get() = R.layout.activity_word_list
-
-    override fun onViewCreated() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_word_list)
+        binding.toolbar.toolbar.init()
+        setSupportActionBar(binding.toolbar.toolbar)
         initActionBar()
         initRecyclerViews()
         updateWordList()
@@ -34,7 +40,7 @@ class WordListM2Activity : BaseActivity() {
     }
 
     private fun initRecyclerViews() {
-        findViewById<RecyclerView>(R.id.recyclerView).apply {
+        binding.recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@WordListM2Activity)
             adapter = wordListM2Adapter

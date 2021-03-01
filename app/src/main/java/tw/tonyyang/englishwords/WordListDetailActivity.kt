@@ -1,24 +1,28 @@
 package tw.tonyyang.englishwords
 
+import android.os.Bundle
 import android.view.MenuItem
-import android.widget.TextView
-import com.hedgehog.ratingbar.RatingBar
+import androidx.appcompat.app.AppCompatActivity
 import tw.tonyyang.englishwords.database.entity.Word
+import tw.tonyyang.englishwords.databinding.ActivityWordListInfoBinding
 
-class WordListDetailActivity : BaseActivity() {
+class WordListDetailActivity : AppCompatActivity() {
     private var selectedWords: Word? = null
-    override val layoutResource: Int
-        get() = R.layout.activity_word_list_info
 
-    override fun onViewCreated() {
-        initActionBar()
+    private val binding by viewBinding(ActivityWordListInfoBinding::inflate)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_word_list_info)
+        binding.toolbar.toolbar.init()
+        setSupportActionBar(binding.toolbar.toolbar)
         initExtras()
+        initActionBar()
         setViews()
     }
 
     private fun initActionBar() {
-        val actionBar = supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     private fun initExtras() {
@@ -29,11 +33,11 @@ class WordListDetailActivity : BaseActivity() {
 
     private fun setViews() {
         selectedWords.let {
-            findViewById<TextView>(R.id.tv_word).text = selectedWords?.word?.replace("*", "")
-            findViewById<TextView>(R.id.tv_wordmean).text = selectedWords?.wordMean
-            findViewById<TextView>(R.id.tv_word_sentence).text = selectedWords?.wordSentence
-            findViewById<TextView>(R.id.tv_category).text = selectedWords?.category
-            findViewById<RatingBar>(R.id.ratingbar).setStar(selectedWords?.wordStar?.toFloat() ?: 0F)
+            binding.tvWord.text = selectedWords?.word?.replace("*", "")
+            binding.tvWordmean.text = selectedWords?.wordMean
+            binding.tvWordSentence.text = selectedWords?.wordSentence
+            binding.tvCategory.text = selectedWords?.category
+            binding.ratingbar.setStar(selectedWords?.wordStar?.toFloat() ?: 0F)
         }
     }
 
