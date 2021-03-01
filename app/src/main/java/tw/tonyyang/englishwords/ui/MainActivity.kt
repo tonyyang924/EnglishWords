@@ -1,39 +1,38 @@
 package tw.tonyyang.englishwords.ui
 
-import androidx.appcompat.widget.Toolbar
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import tw.tonyyang.englishwords.BaseActivity
 import tw.tonyyang.englishwords.ui.exam.ExamFragment
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.WordListM1Fragment
+import tw.tonyyang.englishwords.databinding.ActivityMainBinding
+import tw.tonyyang.englishwords.init
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment
+import tw.tonyyang.englishwords.viewBinding
 
-class MainActivity : BaseActivity() {
+class MainActivity : AppCompatActivity() {
 
-    override fun initToolbar() {
-        super.initToolbar()
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-    }
+    private val binding by viewBinding(ActivityMainBinding::inflate)
 
-    override val layoutResource: Int
-        get() = R.layout.activity_main
-
-    override fun onViewCreated() {
-        val tabLayoutLabels = listOf(
+    private val tabLayoutLabels by lazy {
+        listOf(
                 getString(R.string.tab_label_importer),
                 getString(R.string.tab_label_vocabularies),
                 getString(R.string.tab_label_exam)
         )
-        val tabLayout: TabLayout = findViewById(R.id.tabs)
-        val viewpager: ViewPager2 = findViewById(R.id.viewpager)
-        viewpager.adapter = LabelPagerAdapter(this, tabLayoutLabels.size)
-        TabLayoutMediator(tabLayout, viewpager) { tab, position ->
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        binding.toolbar.toolbar.init()
+        setSupportActionBar(binding.toolbar.toolbar)
+        binding.viewPager.adapter = LabelPagerAdapter(this, tabLayoutLabels.size)
+        TabLayoutMediator(binding.tabsLayout, binding.viewPager) { tab, position ->
             tab.text = tabLayoutLabels.getOrNull(position)
         }.attach()
     }
