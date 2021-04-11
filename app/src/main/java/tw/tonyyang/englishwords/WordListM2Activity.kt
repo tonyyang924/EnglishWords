@@ -27,7 +27,6 @@ class WordListM2Activity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_word_list)
         binding.toolbar.toolbar.init()
         setSupportActionBar(binding.toolbar.toolbar)
         initActionBar()
