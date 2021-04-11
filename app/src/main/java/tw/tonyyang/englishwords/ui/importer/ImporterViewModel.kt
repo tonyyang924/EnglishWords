@@ -32,8 +32,8 @@ class ImporterViewModel(
                             if (wordList.isEmpty()) {
                                 _showResult.value = Result.Error(IllegalStateException(App.appContext.getString(R.string.import_excel_failed_word_list_empty)))
                             }
-                            App.db.userDao().deleteAll()
-                            val roomInsertedCount = App.db.userDao().insertAll(wordList).size
+                            App.db.wordDao().deleteAll()
+                            val roomInsertedCount = App.db.wordDao().insertAll(wordList).size
                             _showResult.value = if (roomInsertedCount > 0) {
                                 Result.Success(App.appContext.getString(R.string.import_excel_complete, roomInsertedCount))
                             } else {

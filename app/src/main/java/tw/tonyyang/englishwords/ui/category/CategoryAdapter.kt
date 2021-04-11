@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui.category
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,8 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import tw.tonyyang.englishwords.R
 
-class WordListM1Adapter : RecyclerView.Adapter<WordListM1Adapter.ViewHolder>() {
+class CategoryAdapter : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
     interface OnRecyclerViewListener {
         fun onItemClick(v: View?, position: Int)
         fun onItemLongClick(v: View?, position: Int)

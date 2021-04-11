@@ -50,7 +50,7 @@ class WordListM2Activity : AppCompatActivity() {
 
     private fun updateWordList() = lifecycleScope.launch(Dispatchers.Main) {
         withContext(Dispatchers.Default) {
-            db.userDao().getCategoryWords(category)
+            db.wordDao().getCategoryWords(category)
         }.let {
             wordListM2Adapter.wordList = it
         }
