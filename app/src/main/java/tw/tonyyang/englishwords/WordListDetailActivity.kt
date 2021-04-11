@@ -13,7 +13,6 @@ class WordListDetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_word_list_info)
         binding.toolbar.toolbar.init()
         setSupportActionBar(binding.toolbar.toolbar)
         initExtras()
