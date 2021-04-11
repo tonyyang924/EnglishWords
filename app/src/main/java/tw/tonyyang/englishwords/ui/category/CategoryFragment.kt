@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui.category
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,19 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import tw.tonyyang.englishwords.App.Companion.db
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.RealTimeUpdateEvent
+import tw.tonyyang.englishwords.WordListM2Activity
 import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
 
-class WordListM1Fragment : Fragment() {
+class CategoryFragment : Fragment() {
 
-    private val wordListM1Adapter: WordListM1Adapter by lazy {
-        WordListM1Adapter()
+    private val categoryViewModel: CategoryViewModel by viewModel()
+
+    private val categoryAdapter: CategoryAdapter by lazy {
+        CategoryAdapter()
     }
 
     private lateinit var binding: FragmentWordListBinding
@@ -30,26 +33,21 @@ class WordListM1Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        wordListM1Adapter.onRecyclerViewListener = onRecyclerViewListener
+        categoryAdapter.onRecyclerViewListener = onRecyclerViewListener
         binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
-            adapter = wordListM1Adapter
+            adapter = categoryAdapter
         }
-        updateCategoryList()
+        categoryViewModel.categories.observe(viewLifecycleOwner) {
+            categoryAdapter.categoryList = it
+        }
+        categoryViewModel.updateCategoryList()
     }
 
-    private fun updateCategoryList() = lifecycleScope.launch(Dispatchers.Main) {
-        withContext(Dispatchers.Default) {
-            db.userDao().allCategory
-        }.let {
-            wordListM1Adapter.categoryList = it
-        }
-    }
-
-    private val onRecyclerViewListener: WordListM1Adapter.OnRecyclerViewListener = object : WordListM1Adapter.OnRecyclerViewListener {
+    private val onRecyclerViewListener: CategoryAdapter.OnRecyclerViewListener = object : CategoryAdapter.OnRecyclerViewListener {
         override fun onItemClick(v: View?, position: Int) {
-            val category = wordListM1Adapter.getItem(position)
+            val category = categoryAdapter.getItem(position)
             val intent = Intent(activity, WordListM2Activity::class.java)
             val bundle = Bundle()
             bundle.putString(WordListM2Activity.EXTRA_CATEGORY, category)
@@ -81,11 +79,11 @@ class WordListM1Fragment : Fragment() {
         val type = event.type
         if (type === RealTimeUpdateEvent.Type.UPDATE_WORD_LIST) {
             Logger.d(TAG, "UPDATE_WORD_LIST: " + event.message)
-            updateCategoryList()
+            categoryViewModel.updateCategoryList()
         }
     }
 
     companion object {
-        private val TAG = WordListM1Fragment::class.java.simpleName
+        private val TAG = CategoryFragment::class.java.simpleName
     }
 }

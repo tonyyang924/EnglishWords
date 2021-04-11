@@ -8,7 +8,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import tw.tonyyang.englishwords.ui.exam.ExamFragment
 import tw.tonyyang.englishwords.R
-import tw.tonyyang.englishwords.WordListM1Fragment
+import tw.tonyyang.englishwords.ui.category.CategoryFragment
 import tw.tonyyang.englishwords.databinding.ActivityMainBinding
 import tw.tonyyang.englishwords.init
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment = when (position) {
             TAB_IMPORTER -> ImporterFragment.newInstance()
-            TAB_WORD_LIST_M1 -> WordListM1Fragment()
+            TAB_WORD_LIST_M1 -> CategoryFragment()
             TAB_EXAM -> ExamFragment()
             else -> throw RuntimeException("Could not get fragment.")
         }
