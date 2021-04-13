@@ -1,5 +1,6 @@
 package tw.tonyyang.englishwords.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -18,7 +19,7 @@ interface WordDao {
     val allCategory: List<String>
 
     @Query("SELECT * FROM word WHERE category = (:category)")
-    fun getCategoryWords(category: String): List<Word>
+    fun getCategoryWords(category: String): LiveData<List<Word>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(words: List<Word>): LongArray

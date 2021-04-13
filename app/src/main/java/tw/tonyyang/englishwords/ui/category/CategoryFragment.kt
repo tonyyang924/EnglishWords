@@ -13,8 +13,8 @@ import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
-import tw.tonyyang.englishwords.WordListM2Activity
-import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
+import tw.tonyyang.englishwords.databinding.FragmentCategoryBinding
+import tw.tonyyang.englishwords.ui.word.list.WordListActivity
 
 class CategoryFragment : Fragment() {
 
@@ -24,10 +24,10 @@ class CategoryFragment : Fragment() {
         CategoryAdapter()
     }
 
-    private lateinit var binding: FragmentWordListBinding
+    private lateinit var binding: FragmentCategoryBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentWordListBinding.inflate(inflater, container, false)
+        binding = FragmentCategoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,9 +48,9 @@ class CategoryFragment : Fragment() {
     private val onRecyclerViewListener: CategoryAdapter.OnRecyclerViewListener = object : CategoryAdapter.OnRecyclerViewListener {
         override fun onItemClick(v: View?, position: Int) {
             val category = categoryAdapter.getItem(position)
-            val intent = Intent(activity, WordListM2Activity::class.java)
+            val intent = Intent(activity, WordListActivity::class.java)
             val bundle = Bundle()
-            bundle.putString(WordListM2Activity.EXTRA_CATEGORY, category)
+            bundle.putString(WordListActivity.EXTRA_CATEGORY, category)
             intent.putExtras(bundle)
             startActivity(intent)
         }
