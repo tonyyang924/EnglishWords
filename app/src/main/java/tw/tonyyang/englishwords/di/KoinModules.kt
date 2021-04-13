@@ -10,12 +10,15 @@ import tw.tonyyang.englishwords.data.exam.local.ExamLocalDataSource
 import tw.tonyyang.englishwords.data.exam.local.ExamLocalDataSourceImpl
 import tw.tonyyang.englishwords.data.excel.local.ExcelLocalDataSource
 import tw.tonyyang.englishwords.data.excel.remote.ExcelRemoteDataSource
+import tw.tonyyang.englishwords.data.word.list.local.WordListLocalDataSource
+import tw.tonyyang.englishwords.data.word.list.local.WordListLocalDataSourceImpl
 import tw.tonyyang.englishwords.database.AppDatabase
 import tw.tonyyang.englishwords.database.dao.WordDao
 import tw.tonyyang.englishwords.repository.*
 import tw.tonyyang.englishwords.ui.category.CategoryViewModel
 import tw.tonyyang.englishwords.ui.exam.ExamViewModel
 import tw.tonyyang.englishwords.ui.importer.ImporterViewModel
+import tw.tonyyang.englishwords.ui.word.list.WordListViewModel
 
 val databaseModule = module {
     fun provideDatabase(application: Application): AppDatabase {
@@ -44,4 +47,8 @@ val appModule = module {
     viewModel { CategoryViewModel(get()) }
     single<CategoryRepository> { CategoryRepositoryImpl(get()) }
     single<CategoryLocalDataSource> { CategoryLocalDataSourceImpl(get()) }
+    // WordList
+    viewModel { WordListViewModel(get()) }
+    single<WordListRepository> { WordListRepositoryImpl(get()) }
+    single<WordListLocalDataSource> { WordListLocalDataSourceImpl() }
 }
