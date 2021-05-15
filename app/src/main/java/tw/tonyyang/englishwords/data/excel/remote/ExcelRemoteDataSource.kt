@@ -11,9 +11,9 @@ class ExcelRemoteDataSource : AbstractExcelDataSource() {
         val client = OkHttpClient()
         val response = client.newCall(request).execute()
         if (!response.isSuccessful) {
-            throw IOException("Cannot get data from remote data source caused by: ${response.message()}")
+            throw IOException("Cannot get data from remote data source caused by: ${response.message}")
         }
-        val bytes = response.body()?.bytes()
+        val bytes = response.body?.bytes()
         if (bytes?.isEmpty() == true) {
             throw IOException("Remote data is empty.")
         }
