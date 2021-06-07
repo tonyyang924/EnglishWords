@@ -13,8 +13,8 @@ import java.lang.IllegalArgumentException
 
 
 class ExcelRepository(
-        private val localDataSource: ExcelLocalDataSource = ExcelLocalDataSource(),
-        private val remoteDataSource: ExcelRemoteDataSource = ExcelRemoteDataSource()
+        private val localDataSource: ExcelLocalDataSource,
+        private val remoteDataSource: ExcelRemoteDataSource
 ) {
     suspend fun getWordList(fileUrl: String?): Flow<List<Word>> = flow {
         if (fileUrl.isNullOrBlank()) {
