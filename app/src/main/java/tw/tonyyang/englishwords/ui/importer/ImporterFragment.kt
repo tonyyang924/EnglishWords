@@ -1,32 +1,33 @@
 package tw.tonyyang.englishwords.ui.importer
 
-import android.app.Activity
+import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
-import tw.tonyyang.englishwords.RequestCodeStore
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
-import tw.tonyyang.englishwords.util.PermissionManager
 import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.UiUtils
+import tw.tonyyang.englishwords.util.showSnackbar
 
 class ImporterFragment private constructor() : Fragment() {
 
     private lateinit var binding: FragmentDropboxchooserBinding
+
+    private lateinit var layout: View
 
     private val viewModel: ImporterViewModel by viewModel()
 
@@ -34,8 +35,41 @@ class ImporterFragment private constructor() : Fragment() {
 
     private var progress: AlertDialog? = null
 
+    private val startChooseFileLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()
+            ) { result ->
+                Logger.d(TAG, "choose file result")
+                val uri = result?.data?.data
+                if (uri != null) {
+                    fileUrl = uri.toString()
+                    binding.tvFilename.text = fileUrl
+                    binding.tvFileSize.text = ""
+                    binding.btnSubmit.isEnabled = true
+                }
+            }
+
+    private val requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()
+            ) { isGranted: Boolean ->
+                if (isGranted) {
+                    layout.showSnackbar(
+                            R.string.importer_external_storage_permission_granted,
+                            Snackbar.LENGTH_INDEFINITE,
+                            android.R.string.ok
+                    ) {
+                        chooseFileFromLocal()
+                    }
+                } else {
+                    layout.showSnackbar(
+                            R.string.importer_external_storage_permission_denied,
+                            Snackbar.LENGTH_SHORT,
+                            android.R.string.ok)
+                }
+            }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDropboxchooserBinding.inflate(inflater, container, false)
+        layout = binding.root
         return binding.root
     }
 
@@ -50,25 +84,7 @@ class ImporterFragment private constructor() : Fragment() {
             progress = UiUtils.getProgressDialog(it, it.getString(R.string.loading_message))
         }
         binding.btnChooser.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= 23) {
-                activity?.let {
-                    PermissionManager.verifyStoragePermissions(it, this@ImporterFragment, object : PermissionManager.PermissionCallback {
-                        override fun onPermissionGranted() {
-                            chooseFileFromLocal()
-                        }
-
-                        override fun onShowGuide() {
-                            Toast.makeText(activity, "需要取得您的讀寫權限才能正常存取手機檔案，請至\"設定\"開啟讀寫權限。", Toast.LENGTH_LONG).show()
-                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                            val uri = Uri.fromParts("package", activity?.packageName, null)
-                            intent.data = uri
-                            activity?.startActivityForResult(intent, RequestCodeStore.REQUEST_EXTERNAL_STORAGE)
-                        }
-                    })
-                }
-            } else {
-                chooseFileFromLocal()
-            }
+            chooseFile()
         }
         binding.btnSubmit.setOnClickListener {
             viewModel.importWords(fileUrl)
@@ -96,42 +112,40 @@ class ImporterFragment private constructor() : Fragment() {
         })
     }
 
+    private fun chooseFile() {
+        val activity = activity ?: return
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
+            chooseFileFromLocal()
+        } else requestExternalStoragePermission()
+    }
+
+    private fun requestExternalStoragePermission() {
+        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            layout.showSnackbar(
+                    R.string.importer_external_storage_access_required,
+                    Snackbar.LENGTH_INDEFINITE,
+                    android.R.string.ok
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        } else {
+            layout.showSnackbar(
+                    R.string.importer_external_storage_permission_not_available,
+                    Snackbar.LENGTH_LONG,
+                    android.R.string.ok
+            ) {
+                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
+        }
+    }
+
     private fun chooseFileFromLocal() {
         val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
             type = "application/vnd.ms-excel"
         }
         val destIntent = Intent.createChooser(intent, "檔案目錄選擇")
-        if (activity == null || activity?.isFinishing == true || activity?.isDestroyed == true) {
-            return
-        }
-        startActivityForResult(destIntent, RequestCodeStore.FILE_CHOOSER_REQUEST)
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RequestCodeStore.FILE_CHOOSER_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                Logger.d(TAG, "file chooser")
-                val uri = data?.data
-                if (uri != null) {
-                    fileUrl = uri.toString()
-                    binding.tvFilename.text = fileUrl
-                    binding.tvFileSize.text = ""
-                    binding.btnSubmit.isEnabled = true
-                }
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == RequestCodeStore.REQUEST_EXTERNAL_STORAGE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                chooseFileFromLocal()
-            } else {
-                Toast.makeText(activity, "請取得內部檔案讀取權限，否則無法讀取本地端檔案。", Toast.LENGTH_SHORT).show()
-            }
-        }
+        startChooseFileLauncher.launch(destIntent)
     }
 
     companion object {

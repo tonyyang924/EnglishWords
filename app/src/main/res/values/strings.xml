@@ -11,6 +11,10 @@
     <string name="import_excel_failed_empty">匯入單字失敗，因為Excel sheets為空</string>
     <string name="import_excel_failed_word_list_empty">匯入單字失敗，因為沒有單字</string>
     <string name="import_excel_insert_failed">單字集匯入資料庫失敗</string>
+    <string name="importer_external_storage_access_required">需要儲存權限才能讀取儲存空間</string>
+    <string name="importer_external_storage_permission_not_available">需要取得您的讀寫權限才能正常存取手機檔案，請至"設定"開啟讀寫權限。</string>
+    <string name="importer_external_storage_permission_granted">已授權儲存權限，開始選取單字檔案</string>
+    <string name="importer_external_storage_permission_denied">儲存權限請求被拒絕</string>
     <string name="failure_cannot_find_words">發生錯誤，找不到單字！</string>
     <string name="dialog_action_ok">確定</string>
     <string name="dialog_action_cancel">取消</string>
