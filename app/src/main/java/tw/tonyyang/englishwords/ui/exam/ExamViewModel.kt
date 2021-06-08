@@ -71,7 +71,7 @@ class ExamViewModel(private val examRepository: ExamRepository) : ViewModel() {
     }
 
     companion object {
-        private val TAG = ExamViewModel::class.java.simpleName
+        private const val TAG = "ExamViewModel"
         private const val RANDOM_WORDS_LIMIT_NUM = 4
         private const val SYMBOL_STAR = "*"
     }

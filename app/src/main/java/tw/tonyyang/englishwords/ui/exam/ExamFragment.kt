@@ -108,6 +108,6 @@ class ExamFragment : Fragment() {
     }
 
     companion object {
-        private val TAG = ExamFragment::class.java.simpleName
+        private const val TAG = "ExamFragment"
     }
 }
