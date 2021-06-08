@@ -8,10 +8,8 @@ import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.Logger
 import tw.tonyyang.englishwords.R
-import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.databinding.FragmentExamBinding
 import tw.tonyyang.englishwords.state.Result
-import java.util.*
 
 class ExamFragment : Fragment() {
 
@@ -50,7 +48,7 @@ class ExamFragment : Fragment() {
             }
             binding.tvResult.text = if (result == trueWord) "答對了！\n答案是：$trueWord" else "答錯了唷！\n答案是：$trueWord"
         }
-        examViewModel.randomWordList.observe(viewLifecycleOwner) {
+        examViewModel.examData.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.InProgress -> {
                     Logger.d(TAG, "Result.InProgress")
@@ -60,36 +58,29 @@ class ExamFragment : Fragment() {
                 }
                 is Result.Error -> {
                     Toast.makeText(activity, it.exception.message, Toast.LENGTH_LONG).show()
+                    handleError()
                 }
             }
         }
-        examViewModel.requestRandomWords()
+        examViewModel.requestExam()
     }
 
-    private fun updateUI(list: List<Word>) {
-        if (list.isEmpty()) {
-            binding.tvStatus.visibility = View.VISIBLE
-            binding.tvChineseMean.text = ""
-            for (i in 0 until binding.rgAns.childCount) {
-                binding.rgAns.getChildAt(i).isEnabled = false
-            }
-            binding.btnAnswer.isEnabled = false
-        } else {
-            binding.tvStatus.visibility = View.GONE
-            trueWord = list[0].word.replace("*", "")
-            binding.tvChineseMean.text = list[0].wordMean
-            var rnd: Int
-            val random = IntArray(4)
-            val rndSet: HashSet<Int> = HashSet<Int>(4)
-            for (i in 0..3) {
-                rnd = (4 * Math.random()).toInt()
-                while (!rndSet.add(rnd)) rnd = (4 * Math.random()).toInt()
-                random[i] = rnd
-            }
-            for (i in ansRadioBtnList.indices) {
-                ansRadioBtnList[i].text = list[random[i]].word.replace("*", "")
-            }
+    private fun updateUI(examData: ExamData) {
+        binding.tvStatus.visibility = View.GONE
+        trueWord = examData.trueWord
+        binding.tvChineseMean.text = examData.wordMean
+        for (i in ansRadioBtnList.indices) {
+            ansRadioBtnList[i].text = examData.answers[i]
         }
+    }
+
+    private fun handleError() {
+        binding.tvStatus.visibility = View.VISIBLE
+        binding.tvChineseMean.text = ""
+        for (i in 0 until binding.rgAns.childCount) {
+            binding.rgAns.getChildAt(i).isEnabled = false
+        }
+        binding.btnAnswer.isEnabled = false
     }
 
     override fun onResume() {
@@ -110,7 +101,7 @@ class ExamFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_random) {
-            examViewModel.requestRandomWords()
+            examViewModel.requestExam()
             return true
         }
         return super.onOptionsItemSelected(item)
