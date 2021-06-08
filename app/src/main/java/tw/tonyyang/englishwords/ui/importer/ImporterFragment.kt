@@ -135,7 +135,7 @@ class ImporterFragment private constructor() : Fragment() {
     }
 
     companion object {
-        private val TAG = ImporterFragment::class.java.simpleName
+        private const val TAG = "ImporterFragment"
 
         fun newInstance() = ImporterFragment()
     }

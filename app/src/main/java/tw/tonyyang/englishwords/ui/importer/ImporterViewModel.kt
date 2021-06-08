@@ -46,6 +46,6 @@ class ImporterViewModel(
     }
 
     companion object {
-        private val TAG = ImporterViewModel::class.java.simpleName
+        private const val TAG = "ImporterViewModel"
     }
 }
