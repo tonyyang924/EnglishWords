@@ -23,7 +23,7 @@ import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.UiUtils
 import tw.tonyyang.englishwords.util.showSnackbar
 
-class ImporterFragment private constructor() : Fragment() {
+class ImporterFragment : Fragment() {
 
     private lateinit var binding: FragmentDropboxchooserBinding
 
