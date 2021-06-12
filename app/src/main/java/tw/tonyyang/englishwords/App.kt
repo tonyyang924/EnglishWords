@@ -1,30 +1,31 @@
 package tw.tonyyang.englishwords
 
 import android.app.Application
-import com.crashlytics.android.Crashlytics
+import android.content.Context
 import com.facebook.stetho.Stetho
-import com.google.firebase.analytics.FirebaseAnalytics
-import io.fabric.sdk.android.Fabric
+import org.koin.core.context.startKoin
+import org.koin.android.ext.koin.androidContext
 import tw.tonyyang.englishwords.database.AppDatabase
 import tw.tonyyang.englishwords.database.AppDatabase.Companion.getDatabase
+import tw.tonyyang.englishwords.di.appModule
+import tw.tonyyang.englishwords.di.databaseModule
 
 class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        val fabric = Fabric.Builder(this)
-                .kits(Crashlytics())
-                .debuggable(true)
-                .build()
-        Fabric.with(fabric)
-        FirebaseAnalytics.getInstance(this)
+        appContext = this
         Stetho.initializeWithDefaults(this)
+        startKoin {
+            androidContext(this@App)
+            modules(databaseModule)
+            modules(appModule)
+        }
         db = getDatabase(this)
     }
 
     companion object {
-        @JvmStatic
-        var db: AppDatabase? = null
-            private set
+        lateinit var db: AppDatabase
+        lateinit var appContext: Context
     }
 }

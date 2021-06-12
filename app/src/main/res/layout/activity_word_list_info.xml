@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hedgehog="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,20 +28,20 @@
                 android:textSize="20sp"
                 tools:text="LEVEL1" />
 
-            <com.hedgehog.ratingbar.RatingBar
+            <tw.tonyyang.englishwords.ui.widget.RatingBar
                 android:id="@+id/ratingbar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                hedgehog:clickable="true"
-                hedgehog:halfstart="true"
-                hedgehog:starCount="5"
-                hedgehog:starEmpty="@mipmap/star_empty"
-                hedgehog:starFill="@mipmap/star_full"
-                hedgehog:starHalf="@mipmap/star_half"
-                hedgehog:starImageHeight="20dp"
-                hedgehog:starImagePadding="0dp"
-                hedgehog:starImageWidth="30dp"
+                app:clickable="true"
+                app:halfstart="true"
+                app:starCount="5"
+                app:starEmpty="@mipmap/star_empty"
+                app:starFill="@mipmap/star_full"
+                app:starHalf="@mipmap/star_half"
+                app:starImageHeight="20dp"
+                app:starImagePadding="0dp"
+                app:starImageWidth="30dp"
                 android:focusable="true" />
 
         </LinearLayout>
