@@ -10,10 +10,6 @@ This project is built for english learner.
 <img src="screenshots/3.png" height="500"/>
 <img src="screenshots/4.png" height="500"/>
 
-## Release
-
-* [v1.0.1](https://play.google.com/store/apps/details?id=tw.tonyyang.englishwords)
-
 ## Functionality
 
 implemented:
@@ -35,7 +31,7 @@ TODO:
 
 ## Author
 
-* **Tony Yang** - initial & develop basic feature - [tonyyang924](https://github.com/tonyyang924)
+* **Tony Yang** - initial & develop basic feature - [solomaticydl](https://github.com/solomaticydl)
 
 ## License
 
