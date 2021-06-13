@@ -11,6 +11,7 @@ import tw.tonyyang.englishwords.*
 import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
 import tw.tonyyang.englishwords.ui.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import tw.tonyyang.englishwords.ui.word.detail.WordListDetailActivity
 
 class WordListFragment : BaseFragment() {
 
@@ -32,7 +33,7 @@ class WordListFragment : BaseFragment() {
                 Intent(activity, WordListDetailActivity::class.java).apply {
                     Bundle().apply {
                         putSerializable(
-                            WordListDetailActivity.EXTRA_SELECTED_WORDS,
+                            WordListDetailActivity.EXTRA_SELECTED_WORD,
                             wordListAdapter.getItem(position)
                         )
                     }.let {
