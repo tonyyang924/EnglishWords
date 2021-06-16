@@ -5,8 +5,8 @@ import android.view.MenuItem
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.databinding.ActivityWordListDetailBinding
-import tw.tonyyang.englishwords.ui.BaseActivity
-import tw.tonyyang.englishwords.viewBinding
+import tw.tonyyang.englishwords.ui.base.BaseActivity
+import tw.tonyyang.englishwords.ui.base.viewBinding
 
 class WordListDetailActivity : BaseActivity() {
 

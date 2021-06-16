@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.util
 
 import android.util.Log
 

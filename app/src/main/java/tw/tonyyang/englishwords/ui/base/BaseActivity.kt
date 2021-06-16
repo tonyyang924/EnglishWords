@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.ui
+package tw.tonyyang.englishwords.ui.base
 
 import androidx.appcompat.app.AppCompatActivity
 

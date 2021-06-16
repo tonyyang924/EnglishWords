@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import tw.tonyyang.englishwords.*
 import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
-import tw.tonyyang.englishwords.ui.BaseFragment
+import tw.tonyyang.englishwords.ui.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.ui.word.detail.WordListDetailActivity
 

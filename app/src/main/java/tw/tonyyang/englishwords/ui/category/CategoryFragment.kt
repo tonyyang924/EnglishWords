@@ -11,7 +11,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentCategoryBinding
 import tw.tonyyang.englishwords.ui.word.list.WordListActivity

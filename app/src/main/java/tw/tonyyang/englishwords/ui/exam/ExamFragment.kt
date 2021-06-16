@@ -6,7 +6,7 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.databinding.FragmentExamBinding
 import tw.tonyyang.englishwords.state.Result

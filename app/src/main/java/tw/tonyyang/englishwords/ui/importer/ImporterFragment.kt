@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding

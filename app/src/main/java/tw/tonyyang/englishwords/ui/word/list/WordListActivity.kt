@@ -3,7 +3,7 @@ package tw.tonyyang.englishwords.ui.word.list
 import android.os.Bundle
 import android.view.MenuItem
 import tw.tonyyang.englishwords.R
-import tw.tonyyang.englishwords.ui.BaseActivity
+import tw.tonyyang.englishwords.ui.base.BaseActivity
 
 class WordListActivity : BaseActivity() {
 

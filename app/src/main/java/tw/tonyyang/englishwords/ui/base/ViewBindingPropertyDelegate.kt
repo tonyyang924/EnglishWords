@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.ui.base
 
 import android.os.Looper
 import android.view.LayoutInflater

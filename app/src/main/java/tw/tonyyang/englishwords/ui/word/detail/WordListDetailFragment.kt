@@ -6,10 +6,10 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.databinding.FragmentWordListDetailBinding
-import tw.tonyyang.englishwords.ui.BaseFragment
+import tw.tonyyang.englishwords.ui.base.BaseFragment
 
 class WordListDetailFragment : BaseFragment() {
 

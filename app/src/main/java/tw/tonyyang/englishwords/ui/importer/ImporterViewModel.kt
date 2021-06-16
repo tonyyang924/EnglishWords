@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import tw.tonyyang.englishwords.App
-import tw.tonyyang.englishwords.Logger
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.repository.ExcelRepository
 import tw.tonyyang.englishwords.state.Result

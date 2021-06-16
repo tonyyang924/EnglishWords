@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.ui
+package tw.tonyyang.englishwords.ui.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -11,8 +11,8 @@ import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.ui.category.CategoryFragment
 import tw.tonyyang.englishwords.databinding.ActivityMainBinding
 import tw.tonyyang.englishwords.init
+import tw.tonyyang.englishwords.ui.base.viewBinding
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment
-import tw.tonyyang.englishwords.viewBinding
 
 class MainActivity : AppCompatActivity() {
 
