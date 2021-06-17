@@ -45,8 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment = when (position) {
             TAB_IMPORTER -> ImporterFragment.newInstance()
-            TAB_WORD_LIST_M1 -> CategoryFragment()
-            TAB_EXAM -> ExamFragment()
+            TAB_WORD_LIST_M1 -> CategoryFragment.newInstance()
+            TAB_EXAM -> ExamFragment.newInstance()
             else -> throw RuntimeException("Could not get fragment.")
         }
     }

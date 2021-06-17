@@ -85,5 +85,7 @@ class CategoryFragment : Fragment() {
 
     companion object {
         private const val TAG = "CategoryFragment"
+
+        fun newInstance() = CategoryFragment()
     }
 }

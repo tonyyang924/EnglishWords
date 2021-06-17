@@ -109,5 +109,7 @@ class ExamFragment : Fragment() {
 
     companion object {
         private const val TAG = "ExamFragment"
+
+        fun newInstance() = ExamFragment()
     }
 }
