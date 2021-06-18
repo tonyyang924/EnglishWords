@@ -53,11 +53,11 @@ class WordListAdapter: RecyclerView.Adapter<WordListAdapter.ViewHolder>() {
         val info: TextView = itemView.findViewById(R.id.tv_info)
         val category: TextView = itemView.findViewById(R.id.tv_category)
         override fun onClick(v: View) {
-            onRecyclerViewListener?.onItemClick(v, adapterPosition)
+            onRecyclerViewListener?.onItemClick(v, absoluteAdapterPosition)
         }
 
         override fun onLongClick(v: View): Boolean {
-            onRecyclerViewListener?.onItemLongClick(v, adapterPosition)
+            onRecyclerViewListener?.onItemLongClick(v, absoluteAdapterPosition)
             return false
         }
     }

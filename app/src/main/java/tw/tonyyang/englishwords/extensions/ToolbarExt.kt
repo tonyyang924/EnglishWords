@@ -1,7 +1,9 @@
-package tw.tonyyang.englishwords
+package tw.tonyyang.englishwords.extensions
 
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import tw.tonyyang.englishwords.App
+import tw.tonyyang.englishwords.R
 
 fun Toolbar.init() {
     setLogo(R.drawable.ic_launcher)

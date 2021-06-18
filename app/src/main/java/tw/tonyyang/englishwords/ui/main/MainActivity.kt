@@ -10,7 +10,7 @@ import tw.tonyyang.englishwords.ui.exam.ExamFragment
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.ui.category.CategoryFragment
 import tw.tonyyang.englishwords.databinding.ActivityMainBinding
-import tw.tonyyang.englishwords.init
+import tw.tonyyang.englishwords.extensions.init
 import tw.tonyyang.englishwords.ui.base.viewBinding
 import tw.tonyyang.englishwords.ui.importer.ImporterFragment
 
