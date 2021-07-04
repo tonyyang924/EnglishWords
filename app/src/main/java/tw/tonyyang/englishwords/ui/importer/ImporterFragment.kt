@@ -3,7 +3,9 @@ package tw.tonyyang.englishwords.ui.importer
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +17,11 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.state.Result
+import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.util.UiUtils
 import tw.tonyyang.englishwords.util.showSnackbar
 
@@ -122,20 +124,21 @@ class ImporterFragment : Fragment() {
 
     private fun requestExternalStoragePermission() {
         if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            layout.showSnackbar(
-                    R.string.importer_external_storage_access_required,
-                    Snackbar.LENGTH_INDEFINITE,
-                    android.R.string.ok
-            ) {
-                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            }
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         } else {
             layout.showSnackbar(
                     R.string.importer_external_storage_permission_not_available,
                     Snackbar.LENGTH_LONG,
                     android.R.string.ok
             ) {
-                requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                startActivity(
+                    Intent(
+                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                        Uri.fromParts("package", activity?.packageName, null)
+                    ).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    }
+                )
             }
         }
     }
