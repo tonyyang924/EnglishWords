@@ -11,6 +11,7 @@ import tw.tonyyang.englishwords.databinding.FragmentWordListBinding
 import tw.tonyyang.englishwords.ui.base.BaseFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.extensions.init
+import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
 import tw.tonyyang.englishwords.ui.word.detail.WordListDetailActivity
 
 class WordListFragment : BaseFragment() {
@@ -24,28 +25,20 @@ class WordListFragment : BaseFragment() {
     }
 
     private val wordListAdapter: WordListAdapter by lazy {
-        WordListAdapter()
+        WordListAdapter(onRecyclerViewListener)
     }
 
-    private val onRecyclerViewListener: WordListAdapter.OnRecyclerViewListener =
-        object : WordListAdapter.OnRecyclerViewListener {
-            override fun onItemClick(v: View?, position: Int) {
-                Intent(activity, WordListDetailActivity::class.java).apply {
-                    Bundle().apply {
+    private val onRecyclerViewListener: OnRecyclerViewListener =
+        object : OnRecyclerViewListener {
+            override fun onItemClick(v: View, position: Int) {
+                startActivity(Intent(activity, WordListDetailActivity::class.java).apply {
+                    putExtras(Bundle().apply {
                         putSerializable(
                             WordListDetailActivity.EXTRA_SELECTED_WORD,
                             wordListAdapter.getItem(position)
                         )
-                    }.let {
-                        putExtras(it)
-                    }
-                }.let {
-                    startActivity(it)
-                }
-            }
-
-            override fun onItemLongClick(v: View?, position: Int) {
-                // do nothing
+                    })
+                })
             }
         }
 
@@ -74,19 +67,16 @@ class WordListFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = wordListAdapter
         }
-        wordListAdapter.onRecyclerViewListener = onRecyclerViewListener
         viewModel.getWordList(category).observe(viewLifecycleOwner) {
             wordListAdapter.wordList = it
         }
     }
 
     companion object {
-
         fun newInstance(category: String) = WordListFragment().apply {
-            val bundle = Bundle().apply {
+            arguments = Bundle().apply {
                 putString(WordListActivity.EXTRA_CATEGORY, category)
             }
-            arguments = bundle
         }
     }
 }

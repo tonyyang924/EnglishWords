@@ -14,6 +14,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentCategoryBinding
+import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
 import tw.tonyyang.englishwords.ui.word.list.WordListActivity
 
 class CategoryFragment : Fragment() {
@@ -21,7 +22,7 @@ class CategoryFragment : Fragment() {
     private val categoryViewModel: CategoryViewModel by viewModel()
 
     private val categoryAdapter: CategoryAdapter by lazy {
-        CategoryAdapter()
+        CategoryAdapter(onRecyclerViewListener)
     }
 
     private lateinit var binding: FragmentCategoryBinding
@@ -33,7 +34,6 @@ class CategoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        categoryAdapter.onRecyclerViewListener = onRecyclerViewListener
         binding.recyclerview.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(activity)
@@ -45,18 +45,14 @@ class CategoryFragment : Fragment() {
         categoryViewModel.updateCategoryList()
     }
 
-    private val onRecyclerViewListener: CategoryAdapter.OnRecyclerViewListener = object : CategoryAdapter.OnRecyclerViewListener {
-        override fun onItemClick(v: View?, position: Int) {
+    private val onRecyclerViewListener: OnRecyclerViewListener = object : OnRecyclerViewListener {
+        override fun onItemClick(v: View, position: Int) {
             val category = categoryAdapter.getItem(position)
             val intent = Intent(activity, WordListActivity::class.java)
             val bundle = Bundle()
             bundle.putString(WordListActivity.EXTRA_CATEGORY, category)
             intent.putExtras(bundle)
             startActivity(intent)
-        }
-
-        override fun onItemLongClick(v: View?, position: Int) {
-            // do nothing
         }
     }
 

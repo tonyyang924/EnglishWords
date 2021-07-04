@@ -1,20 +1,19 @@
 package tw.tonyyang.englishwords.ui.word.list
 
 import android.view.LayoutInflater
-import android.view.View
-import android.view.View.OnLongClickListener
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.database.entity.Word
+import tw.tonyyang.englishwords.databinding.WordListM2ItemBinding
+import tw.tonyyang.englishwords.ui.base.BaseRecyclerViewHolder
+import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
 
-class WordListAdapter: RecyclerView.Adapter<WordListAdapter.ViewHolder>() {
-    interface OnRecyclerViewListener {
-        fun onItemClick(v: View?, position: Int)
-        fun onItemLongClick(v: View?, position: Int)
-    }
+class WordListAdapter(
+    private val onRecyclerViewListener: OnRecyclerViewListener
+) : RecyclerView.Adapter<WordListAdapter.ViewHolder>() {
 
     var wordList: List<Word> = mutableListOf()
         set(value) {
@@ -22,43 +21,38 @@ class WordListAdapter: RecyclerView.Adapter<WordListAdapter.ViewHolder>() {
             notifyDataSetChanged()
         }
 
-    var onRecyclerViewListener: OnRecyclerViewListener? = null
+    fun getItem(position: Int): Word = wordList[position]
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder {
-        val view = LayoutInflater.from(viewGroup.context).inflate(R.layout.word_list_m2_item, viewGroup, false)
-        val vh = ViewHolder(view)
-        view.setOnClickListener(vh)
-        return vh
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            WordListM2ItemBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            ), onRecyclerViewListener
+        )
     }
 
-    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
-        val words = wordList[i]
-        viewHolder.image.setImageResource(R.drawable.book)
-        viewHolder.title.text = words.word
-        viewHolder.info.text = words.wordMean
-        viewHolder.category.text = words.category
+    override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+        viewHolder.bind(wordList[position])
     }
 
-    override fun getItemCount(): Int {
-        return wordList.size
-    }
+    override fun getItemCount(): Int = wordList.size
 
-    fun getItem(position: Int): Word {
-        return wordList[position]
-    }
+    class ViewHolder(
+        binding: WordListM2ItemBinding,
+        onRecyclerViewListener: OnRecyclerViewListener
+    ) : BaseRecyclerViewHolder(binding.root, onRecyclerViewListener) {
+        private val image: ImageView = itemView.findViewById(R.id.iv_image)
+        private val title: TextView = itemView.findViewById(R.id.tv_title)
+        private val info: TextView = itemView.findViewById(R.id.tv_info)
+        private val category: TextView = itemView.findViewById(R.id.tv_category)
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener, OnLongClickListener {
-        val image: ImageView = itemView.findViewById(R.id.iv_image)
-        val title: TextView = itemView.findViewById(R.id.tv_title)
-        val info: TextView = itemView.findViewById(R.id.tv_info)
-        val category: TextView = itemView.findViewById(R.id.tv_category)
-        override fun onClick(v: View) {
-            onRecyclerViewListener?.onItemClick(v, absoluteAdapterPosition)
-        }
-
-        override fun onLongClick(v: View): Boolean {
-            onRecyclerViewListener?.onItemLongClick(v, absoluteAdapterPosition)
-            return false
+        fun bind(word: Word) {
+            image.setImageResource(R.drawable.book)
+            title.text = word.word
+            info.text = word.wordMean
+            category.text = word.category
         }
     }
 }
