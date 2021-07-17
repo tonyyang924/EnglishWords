@@ -45,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         override fun createFragment(position: Int): Fragment = when (position) {
             TAB_IMPORTER -> ImporterFragment.newInstance()
-            TAB_WORD_LIST_M1 -> CategoryFragment.newInstance()
+            TAB_CATEGORY -> CategoryFragment.newInstance()
             TAB_EXAM -> ExamFragment.newInstance()
             else -> throw RuntimeException("Could not get fragment.")
         }
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAB_IMPORTER = 0
-        private const val TAB_WORD_LIST_M1 = 1
+        private const val TAB_CATEGORY = 1
         private const val TAB_EXAM = 2
     }
 }

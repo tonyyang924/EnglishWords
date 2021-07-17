@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import tw.tonyyang.englishwords.R
 import tw.tonyyang.englishwords.database.entity.Word
-import tw.tonyyang.englishwords.databinding.WordListM2ItemBinding
+import tw.tonyyang.englishwords.databinding.ItemWordBinding
 import tw.tonyyang.englishwords.ui.base.BaseRecyclerViewHolder
 import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
 
@@ -25,7 +25,7 @@ class WordListAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            WordListM2ItemBinding.inflate(
+            ItemWordBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -40,7 +40,7 @@ class WordListAdapter(
     override fun getItemCount(): Int = wordList.size
 
     class ViewHolder(
-        binding: WordListM2ItemBinding,
+        binding: ItemWordBinding,
         onRecyclerViewListener: OnRecyclerViewListener
     ) : BaseRecyclerViewHolder(binding.root, onRecyclerViewListener) {
         private val image: ImageView = itemView.findViewById(R.id.iv_image)

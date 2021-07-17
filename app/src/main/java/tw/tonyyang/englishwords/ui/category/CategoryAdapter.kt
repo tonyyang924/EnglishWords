@@ -6,7 +6,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import tw.tonyyang.englishwords.R
-import tw.tonyyang.englishwords.databinding.WordListM1ItemBinding
+import tw.tonyyang.englishwords.databinding.ItemCategoryBinding
 import tw.tonyyang.englishwords.ui.base.BaseRecyclerViewHolder
 import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
 
@@ -22,7 +22,7 @@ class CategoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            WordListM1ItemBinding.inflate(
+            ItemCategoryBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -43,7 +43,7 @@ class CategoryAdapter(
     }
 
     class ViewHolder(
-        binding: WordListM1ItemBinding,
+        binding: ItemCategoryBinding,
         onRecyclerViewListener: OnRecyclerViewListener
     ) : BaseRecyclerViewHolder(binding.root, onRecyclerViewListener) {
         private val image: ImageView = itemView.findViewById(R.id.iv_image)
