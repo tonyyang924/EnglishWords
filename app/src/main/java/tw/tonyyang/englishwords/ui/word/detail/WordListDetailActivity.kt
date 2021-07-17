@@ -13,7 +13,7 @@ class WordListDetailActivity : BaseActivity() {
     private val binding by viewBinding(ActivityWordListDetailBinding::inflate)
 
     private val selectedWord: Word? by lazy {
-        intent.extras?.getSerializable(EXTRA_SELECTED_WORD) as? Word
+        intent.extras?.getParcelable(EXTRA_SELECTED_WORD) as? Word
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

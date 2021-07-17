@@ -33,7 +33,7 @@ class WordListFragment : BaseFragment() {
             override fun onItemClick(v: View, position: Int) {
                 startActivity(Intent(activity, WordListDetailActivity::class.java).apply {
                     putExtras(Bundle().apply {
-                        putSerializable(
+                        putParcelable(
                             WordListDetailActivity.EXTRA_SELECTED_WORD,
                             wordListAdapter.getItem(position)
                         )

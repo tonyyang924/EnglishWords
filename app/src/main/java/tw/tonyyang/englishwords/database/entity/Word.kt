@@ -1,10 +1,12 @@
 package tw.tonyyang.englishwords.database.entity
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.io.Serializable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 @Entity
 data class Word(
         @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -13,4 +15,4 @@ data class Word(
         @ColumnInfo(name = "word_star") val wordStar: String,
         @ColumnInfo(name = "word_mean") val wordMean: String,
         @ColumnInfo(name = "word_sentence") val wordSentence: String
-) : Serializable
+) : Parcelable

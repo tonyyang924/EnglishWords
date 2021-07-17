@@ -34,7 +34,7 @@ class WordListDetailFragment : BaseFragment() {
     }
 
     private fun setViews() {
-        val word = arguments?.getSerializable(WordListDetailActivity.EXTRA_SELECTED_WORD) as? Word
+        val word = arguments?.getParcelable(WordListDetailActivity.EXTRA_SELECTED_WORD) as? Word
         if (word != null) {
             Logger.d(TAG, "word: $word")
             binding.tvWord.text = word.word.replace("*", "")
@@ -60,7 +60,7 @@ class WordListDetailFragment : BaseFragment() {
 
         fun newInstance(selectedWords: Word?) = WordListDetailFragment().apply {
             val bundle = Bundle().apply {
-                putSerializable(WordListDetailActivity.EXTRA_SELECTED_WORD, selectedWords)
+                putParcelable(WordListDetailActivity.EXTRA_SELECTED_WORD, selectedWords)
             }
             arguments = bundle
         }
