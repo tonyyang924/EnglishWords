@@ -9,6 +9,7 @@ import kotlinx.coroutines.launch
 import tw.tonyyang.englishwords.App
 import tw.tonyyang.englishwords.util.Logger
 import tw.tonyyang.englishwords.R
+import tw.tonyyang.englishwords.database.entity.Word
 import tw.tonyyang.englishwords.repository.ExcelRepository
 import tw.tonyyang.englishwords.state.Result
 import java.lang.IllegalStateException
@@ -17,6 +18,11 @@ import kotlin.system.measureTimeMillis
 class ImporterViewModel(
         private val excelRepository: ExcelRepository
 ) : ViewModel() {
+
+    private val _wordList = MutableLiveData<Result<List<Word>>>()
+    val wordList: LiveData<Result<List<Word>>>
+        get() = _wordList
+
     private val _showResult = MutableLiveData<Result<String>>()
     val showResult: LiveData<Result<String>>
         get() = _showResult
@@ -29,15 +35,25 @@ class ImporterViewModel(
                         .flowOn(Dispatchers.IO)
                         .catch { e -> _showResult.value = Result.Error(e) }
                         .collect { wordList ->
+                            // If list is empty, set `Result.Error` for MutableLivedata and return.
                             if (wordList.isEmpty()) {
-                                _showResult.value = Result.Error(IllegalStateException(App.appContext.getString(R.string.import_excel_failed_word_list_empty)))
+                                IllegalStateException(App.appContext.getString(R.string.import_excel_failed_word_list_empty)).let {
+                                    _showResult.value = Result.Error(it)
+                                    _wordList.value = Result.Error(it)
+                                }
+                                return@collect
                             }
+                            // Delete all vocabularies before doing insertion.
                             App.db.wordDao().deleteAll()
                             val roomInsertedCount = App.db.wordDao().insertAll(wordList).size
-                            _showResult.value = if (roomInsertedCount > 0) {
-                                Result.Success(App.appContext.getString(R.string.import_excel_complete, roomInsertedCount))
+                            if (roomInsertedCount > 0) {
+                                _showResult.value = Result.Success(App.appContext.getString(R.string.import_excel_complete, roomInsertedCount))
+                                _wordList.value = Result.Success(wordList)
                             } else {
-                                Result.Error(IllegalStateException(App.appContext.getString(R.string.import_excel_insert_failed)))
+                                IllegalStateException(App.appContext.getString(R.string.import_excel_insert_failed)).let {
+                                    _showResult.value = Result.Error(it)
+                                    _wordList.value = Result.Error(it)
+                                }
                             }
                         }
             }

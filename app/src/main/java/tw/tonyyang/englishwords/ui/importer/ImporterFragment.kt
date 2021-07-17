@@ -15,10 +15,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
-import org.greenrobot.eventbus.EventBus
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import tw.tonyyang.englishwords.R
-import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentDropboxchooserBinding
 import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.util.Logger
@@ -31,7 +30,7 @@ class ImporterFragment : Fragment() {
 
     private lateinit var layout: View
 
-    private val viewModel: ImporterViewModel by viewModel()
+    private val viewModel: ImporterViewModel by sharedViewModel()
 
     private var fileUrl: String? = null
 
@@ -101,10 +100,6 @@ class ImporterFragment : Fragment() {
                 is Result.Success -> {
                     progress?.hide()
                     Toast.makeText(activity, it.data, Toast.LENGTH_LONG).show()
-                    val realTimeUpdateEvent = RealTimeUpdateEvent(RealTimeUpdateEvent.Type.UPDATE_WORD_LIST).apply {
-                        this.message = "update word list"
-                    }
-                    EventBus.getDefault().post(realTimeUpdateEvent)
                 }
                 is Result.Error -> {
                     progress?.hide()

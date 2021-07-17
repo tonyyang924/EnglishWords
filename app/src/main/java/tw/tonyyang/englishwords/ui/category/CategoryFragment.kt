@@ -7,17 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import tw.tonyyang.englishwords.util.Logger
-import tw.tonyyang.englishwords.RealTimeUpdateEvent
 import tw.tonyyang.englishwords.databinding.FragmentCategoryBinding
+import tw.tonyyang.englishwords.state.Result
 import tw.tonyyang.englishwords.ui.base.OnRecyclerViewListener
+import tw.tonyyang.englishwords.ui.importer.ImporterViewModel
 import tw.tonyyang.englishwords.ui.word.list.WordListActivity
 
 class CategoryFragment : Fragment() {
+
+    private val importerViewModel: ImporterViewModel by sharedViewModel()
 
     private val categoryViewModel: CategoryViewModel by viewModel()
 
@@ -39,6 +39,21 @@ class CategoryFragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = categoryAdapter
         }
+        importerViewModel.wordList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Result.InProgress -> {
+                    // do nothing
+                }
+                is Result.Success -> {
+                    categoryAdapter.categoryList = it.data.map { word ->
+                        word.category
+                    }.distinct()
+                }
+                is Result.Error -> {
+                    // do nothing
+                }
+            }
+        }
         categoryViewModel.categories.observe(viewLifecycleOwner) {
             categoryAdapter.categoryList = it
         }
@@ -56,32 +71,7 @@ class CategoryFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this)
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onRealTimeUpdateEvent(event: RealTimeUpdateEvent) {
-        val type = event.type
-        if (type === RealTimeUpdateEvent.Type.UPDATE_WORD_LIST) {
-            Logger.d(TAG, "UPDATE_WORD_LIST: " + event.message)
-            categoryViewModel.updateCategoryList()
-        }
-    }
-
     companion object {
-        private const val TAG = "CategoryFragment"
-
         fun newInstance() = CategoryFragment()
     }
 }
