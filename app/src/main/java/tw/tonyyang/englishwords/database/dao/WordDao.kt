@@ -16,7 +16,7 @@ interface WordDao {
     fun getRandomWords(limit: Int): List<Word>
 
     @get:Query("SELECT DISTINCT category FROM word")
-    val allCategory: List<String>
+    val allCategory: LiveData<List<String>>
 
     @Query("SELECT * FROM word WHERE category = (:category)")
     fun getCategoryWords(category: String): LiveData<List<Word>>

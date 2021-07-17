@@ -54,10 +54,9 @@ class CategoryFragment : Fragment() {
                 }
             }
         }
-        categoryViewModel.categories.observe(viewLifecycleOwner) {
+        categoryViewModel.getCategoryList().observe(viewLifecycleOwner) {
             categoryAdapter.categoryList = it
         }
-        categoryViewModel.updateCategoryList()
     }
 
     private val onRecyclerViewListener: OnRecyclerViewListener = object : OnRecyclerViewListener {

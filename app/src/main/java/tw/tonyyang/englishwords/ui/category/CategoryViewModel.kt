@@ -10,16 +10,5 @@ import kotlinx.coroutines.withContext
 import tw.tonyyang.englishwords.repository.CategoryRepository
 
 class CategoryViewModel(private val categoryRepository: CategoryRepository) : ViewModel() {
-
-    private val _categories = MutableLiveData<List<String>>()
-    val categories: LiveData<List<String>>
-        get() = _categories
-
-    fun updateCategoryList() {
-        viewModelScope.launch {
-            withContext(Dispatchers.Default) {
-                _categories.postValue(categoryRepository.getCategories())
-            }
-        }
-    }
+    fun getCategoryList(): LiveData<List<String>> = categoryRepository.getCategories()
 }
