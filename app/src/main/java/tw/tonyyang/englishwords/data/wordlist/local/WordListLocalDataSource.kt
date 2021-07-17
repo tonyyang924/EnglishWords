@@ -1,4 +1,4 @@
-package tw.tonyyang.englishwords.data.word.list.local
+package tw.tonyyang.englishwords.data.wordlist.local
 
 import androidx.lifecycle.LiveData
 import tw.tonyyang.englishwords.App

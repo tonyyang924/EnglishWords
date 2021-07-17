@@ -10,8 +10,8 @@ import tw.tonyyang.englishwords.data.exam.local.ExamLocalDataSource
 import tw.tonyyang.englishwords.data.exam.local.ExamLocalDataSourceImpl
 import tw.tonyyang.englishwords.data.excel.local.ExcelLocalDataSource
 import tw.tonyyang.englishwords.data.excel.remote.ExcelRemoteDataSource
-import tw.tonyyang.englishwords.data.word.list.local.WordListLocalDataSource
-import tw.tonyyang.englishwords.data.word.list.local.WordListLocalDataSourceImpl
+import tw.tonyyang.englishwords.data.wordlist.local.WordListLocalDataSource
+import tw.tonyyang.englishwords.data.wordlist.local.WordListLocalDataSourceImpl
 import tw.tonyyang.englishwords.database.AppDatabase
 import tw.tonyyang.englishwords.database.dao.WordDao
 import tw.tonyyang.englishwords.repository.*
